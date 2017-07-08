@@ -4,9 +4,9 @@
 
 ## Status
 
-  - [x]alogrithm for single target function
-  - [ ]alogrithm for multiple target function
-  - [ ]code
+  - [x] alogrithm for single target function
+  - [ ] alogrithm for multiple target function
+  - [ ] code
 
 ## Dependency
 
@@ -14,6 +14,6 @@
 
 ## Compile
 
-  modify 'abcDir' in 'Makefile' to the directory that place **abc** source and library
-  check 'getAbcFlags.sh' is executable
-  run `make`
+  - modify 'abcDir' in 'Makefile' to the directory that place **abc** source and library
+  - check 'getAbcFlags.sh' is executable
+  - run `make`
