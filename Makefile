@@ -9,14 +9,17 @@ CXX       := g++
 LD        := g++
 INC       := -I$(abcSrcDir)
 CXXFLAGS  := $(INC) $(abcFlags)
-LDFLAGS   := -L$(abcLibDir) #-l$(abcLib)
+LDFLAGS   := 
 
 all: $(PROG)
 
-$(PROG): main.o $(abcLibDir)/$(abcLib)
-	$(LD) $(LDFLAGS) -o $@ $<
+$(PROG): main.o ResourceAwarePatchGeneration.o $(abcLibDir)/$(abcLib) 
+	$(LD) $(LDFLAGS) -o $@ $^
 
 main.o: main.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+
+ResourceAwarePatchGeneration.o: ResourceAwarePatchGeneration.cpp ResourceAwarePatchGeneration.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $< 
 
 clean:

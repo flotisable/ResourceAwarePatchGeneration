@@ -13,7 +13,8 @@ class ResourceAwarePatchGenerator
 {
   public:
 
-	  inline ResourceAwarePatchGenerator(string F_file, string G_file, string W_file, string o_p_file, string o_F_file);
+	  ResourceAwarePatchGenerator(string F_file, string G_file, string W_file, string o_p_file, string o_F_file);
+    ~ResourceAwarePatchGenerator();
 
 	  void read_file(string ,string , string);   // Input F_file, G_file, W_file, read to initial_F, initial_G, gate_list 
 	  void construct_DLN ();			//transform initial circuit to DLN circuit 
@@ -34,6 +35,7 @@ class ResourceAwarePatchGenerator
 
 	  string out_Patch_file;
 	  string out_F_file;
+    string in_F_file;
 
 	  Abc_Ntk_t*  initial_F;
 	  Abc_Ntk_t*  initial_G;
@@ -44,6 +46,3 @@ class ResourceAwarePatchGenerator
 	  //???	sat_result;
 	  //???	interpolation_result;
 };
-
-ResourceAwarePatchGenerator::ResourceAwarePatchGenerator(string F_file, string G_file, string W_file, string o_p_file, string o_F_file)
-{read_file(F_file,G_file,W_file);} 
