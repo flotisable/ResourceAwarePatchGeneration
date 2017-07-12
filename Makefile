@@ -9,7 +9,7 @@ CXX       := g++
 LD        := g++
 INC       := -I$(abcSrcDir)
 CXXFLAGS  := $(INC) $(abcFlags)
-LDFLAGS   := 
+LDFLAGS   := -lreadline -lpthread -ldl -lm
 
 all: $(PROG)
 
