@@ -17,6 +17,7 @@ class ResourceAwarePatchGenerator
     ~ResourceAwarePatchGenerator();
 
 	  void read_file(string ,string , string) {}   // Input F_file, G_file, W_file, read to initial_F, initial_G, gate_list 
+    void pre_process() {}
 	  void construct_DLN () {}			//transform initial circuit to DLN circuit 
 	  void transform_to_CNF () {}		//transform DLN circuit to CNF
 	  void sat_solve () {}			//solve CNF by sat
