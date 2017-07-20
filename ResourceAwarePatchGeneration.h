@@ -14,10 +14,12 @@ class ResourceAwarePatchGenerator
   public:
 
 	  ResourceAwarePatchGenerator(string F_file, string G_file, string W_file, string o_p_file, string o_F_file);
-    ~ResourceAwarePatchGenerator();
+    	  ~ResourceAwarePatchGenerator();
 
 	  void read_file(string ,string , string) {}   // Input F_file, G_file, W_file, read to initial_F, initial_G, gate_list 
-    void pre_process() {}
+	  void delete_unused_PO {} 		       // direct delete on initial F
+    	  void pre_process() {}			       // preprocessing on initial F
+	  void construct_t {}			       // contrutct base on initial F
 	  void construct_DLN () {}			//transform initial circuit to DLN circuit 
 	  void transform_to_CNF () {}		//transform DLN circuit to CNF
 	  void sat_solve () {}			//solve CNF by sat
@@ -28,7 +30,7 @@ class ResourceAwarePatchGenerator
 	
   private:
 
-	  class Weight_gate
+	  class Weight_gate			//save weight and PO's address
 	  {
 	  	Abc_Obj_t* gate;
 	  	int        weight; 
@@ -41,6 +43,7 @@ class ResourceAwarePatchGenerator
 	  Abc_Ntk_t*  initial_F;
 	  Abc_Ntk_t*  initial_G;
 	  vector <Weight_gate*> gate_list;
+	  Abc_Ntk_t*  target_function;
 
 	  Abc_Ntk_t*  DLN_circuit;
 	  //???	CNF_formula; 
