@@ -1,4 +1,4 @@
-abcDir    := $(HOME)/Applications/AbcBerkeley/abc
+abcDir    := $(HOME)/abc/src/CADcontest/ResourceAwarePatchGeneration
 abcSrcDir := $(abcDir)/src
 abcLibDir := $(abcDir)
 abcLib    := libabc.a
