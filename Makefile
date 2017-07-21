@@ -13,13 +13,16 @@ LDFLAGS   := -lreadline -lpthread -ldl -lm
 
 all: $(PROG)
 
-$(PROG): main.o ResourceAwarePatchGeneration.o $(abcLibDir)/$(abcLib) 
+$(PROG): main.o ResourceAwarePatchGeneration.o write_patch.o $(abcLibDir)/$(abcLib) 
 	$(LD) $(LDFLAGS) -o $@ $^
 
 main.o: main.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $< 
 
 ResourceAwarePatchGeneration.o: ResourceAwarePatchGeneration.cpp ResourceAwarePatchGeneration.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+
+write_patch.o: write_patch.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $< 
 
 clean:

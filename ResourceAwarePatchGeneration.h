@@ -24,7 +24,7 @@ class ResourceAwarePatchGenerator
 	  void interpolation () {}		//construct t's circuit
 	  
 	  void functional_dependency() {} 	//inculde above three step 
-	  void write_patch () {} 		//write the result to file as the competition format
+	  void write_patch ();  		//write the result to file as the competition format
 	
   private:
 
