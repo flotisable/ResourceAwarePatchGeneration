@@ -1,4 +1,4 @@
-abcDir    := $(HOME)/abc/src/CADcontest/ResourceAwarePatchGeneration
+abcDir    := $(HOME)/abc
 abcSrcDir := $(abcDir)/src
 abcLibDir := $(abcDir)
 abcLib    := libabc.a

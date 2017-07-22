@@ -29,6 +29,7 @@ class ResourceAwarePatchGenerator
 	  void write_patch () {} 		//write the result to file as the competition format
 	
   private:
+	  void* pAbc;
 
 	  class Weight_gate			//save weight and PO's address
 	  {
@@ -38,7 +39,7 @@ class ResourceAwarePatchGenerator
 
 	  string out_Patch_file;
 	  string out_F_file;
-    string in_F_file;
+    	  string in_F_file;
 
 	  Abc_Ntk_t*  initial_F;
 	  Abc_Ntk_t*  initial_G;
