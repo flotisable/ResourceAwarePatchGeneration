@@ -34,7 +34,7 @@ class ResourceAwarePatchGenerator
     
   private:
 
-      void* pAbc;
+      Abc_Frame_t* pAbc;
 
 	  class Weight_gate			//save weight and PO's address
 	  {
