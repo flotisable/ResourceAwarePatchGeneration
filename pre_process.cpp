@@ -3,16 +3,19 @@
 
 using namespace std;
 
-
-void ResourceAwarePatchGeneraor:: pre_process()
+extern "C"
 {
-    char * pFileName;
-    char Command[1000];
-    sprintf( Command, "read %s", pFileName );
-    if ( Cmd_CommandExecute( pAbc, Command ) )
-    {
-        fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
-        return 1;
-    }
+int    Cmd_CommandExecute( void * pAbc, char * sCommand );
+}
+
+
+void ResourceAwarePatchGenerator:: pre_process()
+{
+	Abc_Obj_t* iter_obj;
+	int i;
+	Abc_NtkForEachObj(initial_G, iter_obj,i)	
+	{
+		cout << Abc_ObjName(iter_obj);
+	}
 
 }

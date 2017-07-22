@@ -16,10 +16,10 @@ class ResourceAwarePatchGenerator
 	  ResourceAwarePatchGenerator(string F_file, string G_file, string W_file, string o_p_file, string o_F_file);
     	  ~ResourceAwarePatchGenerator();
 
-	  void read_file(string ,string , string) {}   // Input F_file, G_file, W_file, read to initial_F, initial_G, gate_list 
-	  void delete_unused_PO {} 		       // direct delete on initial F
-    	  void pre_process() {}			       // preprocessing on initial F
-	  void construct_t {}			       // contrutct base on initial F
+	  void read_file(string ,string , string);    // Input F_file, G_file, W_file, read to initial_F, initial_G, gate_list 
+	  void delete_unused_PO () {} 		       // direct delete on initial F
+    	  void pre_process(); 			       // preprocessing on initial F
+	  void construct_t () {}			       // contrutct base on initial F
 	  void construct_DLN () {}			//transform initial circuit to DLN circuit 
 	  void transform_to_CNF () {}		//transform DLN circuit to CNF
 	  void sat_solve () {}			//solve CNF by sat
