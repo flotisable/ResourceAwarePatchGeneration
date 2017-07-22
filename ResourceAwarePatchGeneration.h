@@ -18,7 +18,7 @@ class ResourceAwarePatchGenerator
 
 	  void read_file(string ,string , string);    // Input F_file, G_file, W_file, read to initial_F, initial_G, gate_list 
 	  void delete_unused_PO () {} 		       // direct delete on initial F
-    	  void pre_process(); 			       // preprocessing on initial F
+    	  void pre_process(string ); 			       // preprocessing on initial F
 	  void construct_t () {}			       // contrutct base on initial F
 	  void construct_DLN () {}			//transform initial circuit to DLN circuit 
 	  void transform_to_CNF () {}		//transform DLN circuit to CNF
@@ -34,6 +34,7 @@ class ResourceAwarePatchGenerator
 	  class Weight_gate			//save weight and PO's address
 	  {
 	  	Abc_Obj_t* gate;
+		string name;
 	  	int        weight; 
 	  };
 

@@ -17,6 +17,8 @@ ResourceAwarePatchGenerator::ResourceAwarePatchGenerator(string F_file, string G
 
 
   read_file(F_file,G_file,W_file);
+  deleete_unused_PO();
+  pre_process(W_file);
 } 
 
 ResourceAwarePatchGenerator::~ResourceAwarePatchGenerator()
