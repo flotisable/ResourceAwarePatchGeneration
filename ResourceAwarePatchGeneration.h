@@ -36,23 +36,25 @@ class ResourceAwarePatchGenerator
 
       Abc_Frame_t* pAbc;
 
-	  class Weight_gate			//save weight and PO's address
-	  {
-	      Abc_Obj_t* gate;
-	      int        weight; 
-	  };
+      class Weight_gate         //save weight and PO's address
+      {
+          Abc_Obj_t* gate;
+          int        weight; 
+      };
 
-	  string out_Patch_file;
-	  string out_F_file;
+      string out_Patch_file;
+      string out_F_file;
       string in_F_file;
+      string in_G_file;
+      string in_W_file;
 
-	  Abc_Ntk_t*  initial_F;
-	  Abc_Ntk_t*  initial_G;
-	  vector <Weight_gate*> gate_list;
-	  Abc_Ntk_t*  target_function;
+      Abc_Ntk_t*  initial_F;
+      Abc_Ntk_t*  initial_G;
+      vector <Weight_gate*> gate_list;
+      Abc_Ntk_t*  target_function;
 
-	  Abc_Ntk_t*  DLN_circuit;
-	  
+      Abc_Ntk_t*  DLN_circuit;
+      
       //??? CNF_formula; 
       //??? sat_result;
       //??? interpolation_result;
