@@ -9,19 +9,6 @@ void ResourceAwarePatchGenerator::read_file()
     char Command[1000];
     
     /////////////////////////////////////////////////////////////////
-    //                           read F file                       //
-    /////////////////////////////////////////////////////////////////
-    sprintf( Command, "read %s", in_F_file.c_str() );
-    if ( Cmd_CommandExecute( pAbc, Command ) )
-    {
-        fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
-    }
-    
-    initial_F = Abc_NtkDup(Abc_FrameReadNtk((Abc_Frame_t*)pAbc));
-	
-    //cout <<"    F Po num:"<<Abc_NtkPoNum(initial_F) << endl;
-	
-    /////////////////////////////////////////////////////////////////
     //                           read G file                       //
     /////////////////////////////////////////////////////////////////
     
@@ -30,5 +17,16 @@ void ResourceAwarePatchGenerator::read_file()
     {
         fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
     }
-    initial_G = Abc_FrameReadNtk( pAbc );
+    initial_G = Abc_NtkDup(Abc_FrameReadNtk(pAbc));
+    
+    /////////////////////////////////////////////////////////////////
+    //                           read F file                       //
+    /////////////////////////////////////////////////////////////////
+    sprintf( Command, "read %s", in_F_file.c_str() );
+    if ( Cmd_CommandExecute( pAbc, Command ) )
+    {
+        fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
+    }
+    
+    initial_F = Abc_FrameReadNtk( pAbc );
 }
