@@ -18,6 +18,7 @@ int main( int argc, char *argv[] )
   solver.construct_DLN();
   solver.functional_dependency();
   solver.write_patch();
+  solver.interpolation();
   
   return 0;
 }
