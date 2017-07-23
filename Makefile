@@ -13,7 +13,7 @@ LDFLAGS   := -lreadline -lpthread -ldl -lm
 
 all: $(PROG)
 
-$(PROG): pre_process.o main.o ResourceAwarePatchGeneration.o $(abcLibDir)/$(abcLib) 
+$(PROG): pre_process.o read_file.o delete_unused_PO.o trav_Po_add_to_set.o  main.o ResourceAwarePatchGeneration.o $(abcLibDir)/$(abcLib) 
 	$(LD) $(LDFLAGS) -o $@ $^
 
 main.o: main.cpp
@@ -24,5 +24,14 @@ ResourceAwarePatchGeneration.o: ResourceAwarePatchGeneration.cpp ResourceAwarePa
 
 pre_process.o: pre_process.cpp ResourceAwarePatchGeneration.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+	
+read_file.o: read_file.cpp ResourceAwarePatchGeneration.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+
+delete_unused_PO.o: delete_unused_PO.cpp ResourceAwarePatchGeneration.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+trav_Po_add_to_set.o: trav_Po_add_to_set.cpp ResourceAwarePatchGeneration.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+
 clean:
 	rm *.o $(PROG)

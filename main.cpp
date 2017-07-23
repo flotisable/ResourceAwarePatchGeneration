@@ -14,8 +14,10 @@ int main( int argc, char *argv[] )
   }
 
   ResourceAwarePatchGenerator solver( argv[1], argv[2], argv[3], argv[4], argv[5] );
+  
+  solver.read_file();
   solver.pre_process();
-
+  solver.delete_unused_PO();
   solver.construct_DLN();
   solver.functional_dependency();
   solver.write_patch();

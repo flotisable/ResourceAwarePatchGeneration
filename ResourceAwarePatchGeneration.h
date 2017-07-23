@@ -1,13 +1,17 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <set>
 
 extern "C"
 {
+#include "base/main/mainInt.h"
 #include "base/abc/abc.h"
 }
 
 using namespace std;
+
+void trav_Po_add_to_set( Abc_Obj_t * pNode, set<Abc_Obj_t*> pSet );
 
 class ResourceAwarePatchGenerator
 {
@@ -41,6 +45,8 @@ class ResourceAwarePatchGenerator
 	  string out_Patch_file;
 	  string out_F_file;
     	  string in_F_file;
+      	  string in_G_file;
+          string in_W_file;
 
 	  Abc_Ntk_t*  initial_F;
 	  Abc_Ntk_t*  initial_G;
