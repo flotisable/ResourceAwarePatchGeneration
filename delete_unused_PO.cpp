@@ -37,8 +37,6 @@ void ResourceAwarePatchGenerator::delete_unused_PO()
         }	
     }
 	
-	cout<<"depend_to_target_Po: "<<depend_to_target_Po.size()<<endl;
-	
     //delete unuse Po
     Abc_NtkForEachPo( initial_F, pPo, i ){
         set<Abc_Obj_t*>::iterator it = depend_to_target_Po.find( pPo );
