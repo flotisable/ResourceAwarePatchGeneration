@@ -4,7 +4,7 @@ using namespace std;
 
 void ResourceAwarePatchGenerator::read_file()
 {   
-    cout<<"read_file ..."<<endl;
+    cout<<"[INFO] read_file ..."<<endl;
 
     char Command[1000];
     
@@ -17,18 +17,18 @@ void ResourceAwarePatchGenerator::read_file()
         fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
     }
     
-    initial_F = Abc_FrameReadNtk(pAbc);
-    cout <<"    F Po num:"<<Abc_NtkPoNum(initial_F) << endl;
-    
+    initial_F = Abc_NtkDup(Abc_FrameReadNtk((Abc_Frame_t*)pAbc));
+	
+    //cout <<"    F Po num:"<<Abc_NtkPoNum(initial_F) << endl;
+	
     /////////////////////////////////////////////////////////////////
     //                           read G file                       //
     /////////////////////////////////////////////////////////////////
     
     sprintf( Command, "read %s", in_G_file.c_str() );
-    if ( Cmd_CommandExecute((Abc_Frame_t*) pAbc, Command ) )
+    if ( Cmd_CommandExecute( pAbc, Command ) )
     {
         fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
     }
-    initial_G = Abc_FrameReadNtk((Abc_Frame_t*)pAbc);
-    
+    initial_G = Abc_FrameReadNtk( pAbc );
 }
