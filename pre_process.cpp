@@ -4,7 +4,6 @@
 
 using namespace std;
 
-<<<<<<< HEAD
 extern "C"
 {
 int    Cmd_CommandExecute( void * pAbc, char * sCommand );
