@@ -25,6 +25,8 @@ bool is_obj_in_vec ( T obj, vector<T> obj_vec)
 
 void ResourceAwarePatchGenerator:: pre_process()
 {
+    cout<<"[INFO] preprocessing ..."<<endl;
+
 	Abc_Obj_t* iter_obj;
 	int i;
 	Abc_NtkForEachObj(initial_F, iter_obj,i)	
