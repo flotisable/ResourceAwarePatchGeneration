@@ -9,7 +9,7 @@ extern "C"
 #include "base/main/main.h"
 }
 
-void ResourceAwarePatchGenerator::write_patch()
+void ResourceAwarePatchGenerator::write_patch( const string patchFileName, const string patchedFileName )
 {
   using namespace std;
 
@@ -22,12 +22,12 @@ void ResourceAwarePatchGenerator::write_patch()
 
   Abc_NtkSetName( pNtk, const_cast<char*>( patchName.c_str() ) );
 
-  Io_WriteVerilog( pNtk, const_cast<char*>( out_Patch_file.c_str() ) );
+  Io_WriteVerilog( pNtk, const_cast<char*>( patchFileName.c_str() ) );
   // end write patch circuit
 
   // write patched circuit
   ifstream  fileFv   ( in_F_file.c_str()   );
-  ofstream  fileFvOut( out_F_file.c_str()  );
+  ofstream  fileFvOut( patchedFileName.c_str()  );
   string    buffer;
 
   while( getline( fileFv, buffer ) )
@@ -64,5 +64,4 @@ void ResourceAwarePatchGenerator::write_patch()
     fileFvOut << buffer << endl;
   }
   // end write patched circuit
-
 }
