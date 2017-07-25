@@ -11,17 +11,6 @@ extern "C"
 extern Aig_Man_t* Abc_NtkToDar( Abc_Ntk_t*, int, int );
 }
 
-// cpp local functions
-namespace Interpolation
-{
-  void splitInterpolationAB();
-  void circuitToCnf();
-  void addClauseA();
-  void addClauseB();
-  void interpolation();
-}
-// end cpp local functions
-
 void ResourceAwarePatchGenerator::interpolation()
 {
   using namespace Interpolation;
@@ -89,27 +78,4 @@ void ResourceAwarePatchGenerator::interpolation()
   sat_solver_store_free( sat_result );
   sat_solver_delete( sat_result );
   Intb_ManFree( intManager );
-}
-
-namespace Interpolation
-{
-  void splitInterpolationAB()
-  {
-  }
-
-  void circuitToCnf()
-  {
-  }
-
-  void addClauseA()
-  {
-  }
-
-  void addClauseB()
-  {
-  }
-
-  void interpolation()
-  {
-  }
 }
