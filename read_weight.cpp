@@ -51,6 +51,7 @@ void ResourceAwarePatchGenerator::read_weight()
 		else{
 			temp->gate   = pObj;
 			temp->weight = iter->second;
+			temp->name=string(name);
 			
 			name_to_weight.erase( iter );
 		}
