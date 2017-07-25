@@ -37,10 +37,10 @@ class ResourceAwarePatchGenerator
       void construct_DLN () {}          //transform initial circuit to DLN circuit 
       void transform_to_CNF () {}       //transform DLN circuit to CNF
       void sat_solve () {}          //solve CNF by sat
-      void interpolation () {}      //construct t's circuit
+      void interpolation ()       //construct t's circuit
       
       void functional_dependency() {}   //inculde above three step 
-      void write_patch() {}         //write the result to file as the competition format
+      void write_patch()          //write the result to file as the competition format
     
   private:
 	  Abc_Frame_t* pAbc;
