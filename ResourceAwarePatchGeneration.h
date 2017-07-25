@@ -15,12 +15,6 @@ using namespace std;
 
 void trav_Po_add_to_set( Abc_Obj_t * pNode, set<Abc_Obj_t*> pSet );
 
-struct Weight_gate_         //save weight and PO's address
-{
-    Abc_Obj_t* gate;
-    int        weight; 
-};
-typedef struct Weight_gate_ Weight_gate;
 
 class ResourceAwarePatchGenerator
 {
