@@ -26,7 +26,7 @@ class ResourceAwarePatchGenerator
 {
   public:
 
-      ResourceAwarePatchGenerator(string F_file, string G_file, string W_file, string o_p_file, string o_F_file);
+      ResourceAwarePatchGenerator(string F_file, string G_file, string W_file);
       ~ResourceAwarePatchGenerator();
 
       void read_file();    // Input F_file, G_file, W_file, read to initial_F, initial_G, gate_list 
@@ -37,10 +37,10 @@ class ResourceAwarePatchGenerator
       void construct_DLN () {}          //transform initial circuit to DLN circuit 
       void transform_to_CNF () {}       //transform DLN circuit to CNF
       void sat_solve () {}          //solve CNF by sat
-      void interpolation () {}      //construct t's circuit
+      void interpolation ();       //construct t's circuit
       
       void functional_dependency() {}   //inculde above three step 
-      void write_patch() {}         //write the result to file as the competition format
+      void write_patch( const string patchedFileName, const string patchFileName );          //write the result to file as the competition format
     
   private:
       Abc_Frame_t* pAbc;
@@ -53,8 +53,6 @@ class ResourceAwarePatchGenerator
       };
 
 
-      string out_Patch_file;
-      string out_F_file;
       string in_F_file;
       string in_G_file;
       string in_W_file;

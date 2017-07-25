@@ -13,7 +13,13 @@ int main( int argc, char *argv[] )
     return 1;
   }
 
-  ResourceAwarePatchGenerator solver( argv[1], argv[2], argv[3], argv[4], argv[5] );
+  string FFileName        = argv[1];  
+  string GFileName        = argv[2];  
+  string weightFileName   = argv[3];  
+  string patchFileName    = argv[4];  
+  string patchedFileName  = argv[5];  
+
+  ResourceAwarePatchGenerator solver( FFileName, GFileName, weightFileName);
   
   solver.read_file();
   solver.delete_unused_PO();
@@ -22,7 +28,7 @@ int main( int argc, char *argv[] )
   
   solver.construct_DLN();
   solver.functional_dependency();
-  solver.write_patch();
+  solver.write_patch( patchFileName, patchedFileName );
   
   return 0;
 }
