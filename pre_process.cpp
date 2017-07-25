@@ -26,15 +26,36 @@ bool is_obj_in_vec ( T obj, vector<T> obj_vec)
 void ResourceAwarePatchGenerator:: pre_process()
 {
     cout<<"[INFO] preprocessing ..."<<endl;
+    cout<<"[INFO] add PO to base function and strash"<<endl;
 
 	Abc_Obj_t* iter_obj;
 	int i;
-	Abc_NtkForEachObj(initial_F, iter_obj,i)	
+        for (i=0;i<gate_list.size();i++)
+	{
+		//if (Abc_ObjIsPigate_list[i]
+		cout << gate_list[i]->name << endl;
+		cout << gate_list[i]->gate << endl;;
+		Abc_Obj_t* base_po=Abc_NtkCreatePo(initial_F);
+		Abc_ObjAddFanin (base_po,gate_list[i]->gate);
+		gate_list[i]->gate=base_po;
+	}
+	initial_F=Abc_NtkStrash(initial_F,0,1,0);
+        for (i=0;i<gate_list.size();i++)
+	{
+		cout << Abc_ObjFanin0(gate_list[i]->gate) << endl;
+		cout << Abc_ObjFaninNum(gate_list[i]->gate) << endl;
+	}
+	
+	
+
+	/*
+	Abc_NtkForEachPi(initial_G, iter_obj,i)	
 	{
 		cout << Abc_ObjName(iter_obj) << endl;
 	}
-	fstream weight_input;
-	weight_input.open( in_W_file.c_str(), ios::in );
+	*/
+	//fstream weight_input;
+	//weight_input.open( in_W_file.c_str(), ios::in );
 	string base_function_name;
 	int base_function_weight;
 	/*
@@ -56,6 +77,7 @@ void ResourceAwarePatchGenerator:: pre_process()
 	}
 	*/
 	map<Abc_Obj_t*,int> DP_cost;
+	//map<Abc_Obj_t*, vector<Abc_Obj_t*> > DP_optimal_base_node;
 	Abc_NtkForEachPi(initial_F, iter_obj,i)	
 	{
 		for (int j=0;j<gate_list.size();j++)
@@ -75,9 +97,12 @@ void ResourceAwarePatchGenerator:: pre_process()
 	DFS_ordered_gates=Abc_NtkDfs2(initial_F);
 	vector<Weight_gate*> new_weight_gate;
 	Abc_Obj_t* iter_dfs_obj;
+
+
+	cout << "[INFO] DP reduce base function started" << endl;
+	int reduced_base_count=0;
 	Vec_PtrForEachEntry(Abc_Obj_t*, DFS_ordered_gates,iter_dfs_obj,i)
 	{
-		bool is_weight_gate=false;
 		int dp_weight=0;
 		int j;
 		Abc_ObjForEachFanin(iter_dfs_obj,iter_obj,j) 
@@ -89,19 +114,26 @@ void ResourceAwarePatchGenerator:: pre_process()
 			if (gate_list[j]->gate==iter_dfs_obj)
 			{
 				if (gate_list[j]->weight>dp_weight)
-					break;
+				{
+					reduced_base_count+=1;
+				}
 				else
 				{
 					new_weight_gate.push_back(gate_list[j]);
 					dp_weight=gate_list[j]->weight;
 				}
+				break;
 					
 				
 			}
 		}
 		DP_cost[iter_dfs_obj]=dp_weight;
 	}
+	cout << "[INFO] " << reduced_base_count << " base function reduced" << endl;
 	gate_list=new_weight_gate;
+	//t_list
+	//t_Pi_list
+	//t_Po_list
 	
 	
 	
