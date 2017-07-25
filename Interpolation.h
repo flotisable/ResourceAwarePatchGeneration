@@ -18,6 +18,8 @@ class Interpolation
 {
   public:
 
+    Interpolation();
+
     inline void setDln          ( const Abc_Ntk_t *dln                    );
     inline void setBaseFunctions( const vector<Abc_Obj_t*> &baseFunctions );
 
@@ -47,12 +49,12 @@ class Interpolation
 };
 
 // public inline member functions
-inline void setDln          ( const Abc_Ntk_t *dln                    )
+inline void Interpolation::setDln          ( const Abc_Ntk_t *dln                    )
 { this->dln = dln; }
-inline void setBaseFunctions( const vector<Abc_Obj_t*> &baseFunctions )
+inline void Interpolation::setBaseFunctions( const vector<Abc_Obj_t*> &baseFunctions )
 { this->baseFunctions = baseFunctions };
 
-inline Aig_Man_t* interpolant() { return mInterpolant; }
+inline Aig_Man_t* Interpolation::interpolant() { return mInterpolant; }
 // end public inline member functions
 
 #endif
