@@ -27,24 +27,48 @@ void ResourceAwarePatchGenerator:: pre_process()
 {
     cout<<"[INFO] preprocessing ..."<<endl;
     cout<<"[INFO] add PO to base function and strash"<<endl;
+	
 
 	Abc_Obj_t* iter_obj;
 	int i;
+	int initial_po_num=Abc_NtkPoNum(initial_F) ;
         for (i=0;i<gate_list.size();i++)
 	{
-		//if (Abc_ObjIsPigate_list[i]
-		cout << gate_list[i]->name << endl;
-		cout << gate_list[i]->gate << endl;;
+		/*
+		if (gate_list[i]->weight==10000)
+			continue;
+		*/
 		Abc_Obj_t* base_po=Abc_NtkCreatePo(initial_F);
 		Abc_ObjAddFanin (base_po,gate_list[i]->gate);
-		gate_list[i]->gate=base_po;
+		//gate_list[i]->gate=base_po;
 	}
-	initial_F=Abc_NtkStrash(initial_F,0,1,0);
+	Abc_Ntk_t* strashed_F=Abc_NtkStrash(initial_F,0,1,0);
+	for (i=0;i<gate_list.size();i++)
+	{
+		/*if (gate_list[i]->weight==10000)
+		{
+			continue;
+		}
+		*/
+		gate_list[i]->gate=Abc_ObjFanin0(Abc_NtkPo(strashed_F,i+initial_po_num));
+	}
+	for (i=initial_po_num;i<Abc_NtkPoNum(strashed_F);i++)
+	{
+		Abc_NtkDeleteObjPo(Abc_NtkPo(strashed_F,i));
+	}
+	/*
         for (i=0;i<gate_list.size();i++)
 	{
-		cout << Abc_ObjFanin0(gate_list[i]->gate) << endl;
-		cout << Abc_ObjFaninNum(gate_list[i]->gate) << endl;
+		Abc_Obj_t* temp_po=gate_list[i]->gate;
+		gate_list[i]->gate=Abc_ObjFanin0(gate_list[i]->gate);
+		Abc_NtkDeleteObjPo(temp_po);
+		
+		
+		cout << gate_list[i]->name << endl;
+		cout << gate_list[i]->gate << endl;
 	}
+	*/
+
 	
 	
 
@@ -78,8 +102,9 @@ void ResourceAwarePatchGenerator:: pre_process()
 	*/
 	map<Abc_Obj_t*,int> DP_cost;
 	//map<Abc_Obj_t*, vector<Abc_Obj_t*> > DP_optimal_base_node;
-	Abc_NtkForEachPi(initial_F, iter_obj,i)	
+	Abc_NtkForEachPi(strashed_F, iter_obj,i)	
 	{
+		cout << iter_obj << endl;
 		for (int j=0;j<gate_list.size();j++)
 		{
 			if (gate_list[j]->gate==iter_obj)
@@ -94,7 +119,7 @@ void ResourceAwarePatchGenerator:: pre_process()
 		
 	}
 	Vec_Ptr_t* DFS_ordered_gates;
-	DFS_ordered_gates=Abc_NtkDfs2(initial_F);
+	DFS_ordered_gates=Abc_NtkDfs2(strashed_F);
 	vector<Weight_gate*> new_weight_gate;
 	Abc_Obj_t* iter_dfs_obj;
 

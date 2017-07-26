@@ -42,25 +42,28 @@ void ResourceAwarePatchGenerator::read_weight()
 		
 		iter = name_to_weight.find( string(name) );
 		
-		Weight_gate* temp = new Weight_gate;
 		
-		if( iter == name_to_weight.end() ){    //this net weight is not defined
+		if( iter != name_to_weight.end() )
+		/*{    //this net weight is not defined
 			temp->gate   = pObj;
 			temp->weight = WEIGHT_MAX;
 		}
-		else{
+		else
+		*/
+		{
+			Weight_gate* temp = new Weight_gate;
 			temp->gate   = pObj;
 			temp->weight = iter->second;
 			temp->name=string(name);
+			gate_list.push_back( temp );
+			cout<<"  gate_list "<<i<<endl;
+			cout<<"    gate name: "<<Abc_ObjName( temp->gate )<<endl;
+			cout<<"    gate weight:"<<temp->weight<<endl;
 			
 			name_to_weight.erase( iter );
 		}
 		
-		gate_list.push_back( temp );
 		
-		cout<<"  gate_list "<<i<<endl;
-		cout<<"    gate name: "<<Abc_ObjName( temp->gate )<<endl;
-		cout<<"    gate weight:"<<temp->weight<<endl;
 	}
 	
 	//cout<<"gate_list.size()=="<<gate_list.size()<<endl;
