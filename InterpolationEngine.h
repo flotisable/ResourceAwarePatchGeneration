@@ -20,8 +20,9 @@ class InterpolationEngine
 
     InterpolationEngine();
 
-    inline void setDln          ( const Abc_Ntk_t *dln                    );
-    inline void setBaseFunctions( const vector<Abc_Obj_t*> &baseFunctions );
+    inline void setDln            ( const Abc_Ntk_t *dln                    );
+    inline void setBaseFunctions  ( const vector<Abc_Obj_t*> &baseFunctions );
+    inline void setTargetFunction ( const Abc_Obj_t *targetFunction         );
 
     inline Aig_Man_t* interpolant();
 
@@ -35,6 +36,7 @@ class InterpolationEngine
 
     Abc_Ntk_t           *dln;          // dependency logic network
     vector<Abc_Obj_t*>  baseFunctions;
+    Abc_Obj_t           *targetFunction;
 
     Aig_Man_t *mInterpolant;
 
@@ -49,10 +51,12 @@ class InterpolationEngine
 };
 
 // public inline member functions
-inline void InterpolationEngine::setDln          ( const Abc_Ntk_t *dln                    )
+inline void InterpolationEngine::setDln           ( const Abc_Ntk_t *dln                    )
 { this->dln = dln; }
-inline void InterpolationEngine::setBaseFunctions( const vector<Abc_Obj_t*> &baseFunctions )
-{ this->baseFunctions = baseFunctions };
+inline void InterpolationEngine::setBaseFunctions ( const vector<Abc_Obj_t*> &baseFunctions )
+{ this->baseFunctions = baseFunctions; }
+inline void InterpolationEngine::setTargetFunction( const Abc_Obj_t *targetFunction         );
+{ this->targetFunction = targetFunction; }
 
 inline Aig_Man_t* InterpolationEngine::interpolant() { return mInterpolant; }
 // end public inline member functions

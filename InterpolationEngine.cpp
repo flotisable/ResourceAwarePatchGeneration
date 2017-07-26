@@ -22,6 +22,12 @@ InterpolationEngine::InterpolationEngine()
 
 void InterpolationEngine::splitInterpolationAB()
 {
+  if( !dln || !targetFunction ) return;
+
+  ntkB = dln;
+  ntkA = Abc_NtkDup( ntkB );  
+
+  Abc_NodeComplement( targetFunction );  
 }
 
 void InterpolationEngine::circuitToCnf()
