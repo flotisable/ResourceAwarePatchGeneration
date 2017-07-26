@@ -1,5 +1,7 @@
 #include "InterpolationEngine.h"
 
+#include <algorithm>
+
 extern "C"
 {
 #include "base/abc/abc.h"
@@ -22,16 +24,28 @@ InterpolationEngine::InterpolationEngine()
 
 void InterpolationEngine::splitInterpolationAB()
 {
-  if( !dln || !targetFunction ) return;
+  if( !dln || !targetFunction ) return; // precondition
+
+  using std::find;
+
+  Abc_Obj_t *node;
+  int       i;
 
   ntkB = dln;
-  ntkA = Abc_NtkDup( ntkB );  
+  ntkA = Abc_NtkDup( ntkB );
 
-  Abc_NodeComplement( targetFunction );  
+  Abc_NodeComplement( targetFunction );
 }
 
 void InterpolationEngine::circuitToCnf()
 {
+  if( !ntkA || !ntkB ) return; // precondition
+
+  Aig_Man_t *aigA = Abc_NtkToDar( ntkA, 0, 0 );
+  Aig_Man_t *aigB = Abc_NtkToDar( ntkB, 0, 0 );
+
+  cnfA = Cnf_DeriveSimple( Aig_ManCoNum( aigA ) );
+  cnfB = Cnf_DeriveSimple( Aig_ManCoNum( aigB ) );
 }
 
 void InterpolationEngine::addClauseA()
