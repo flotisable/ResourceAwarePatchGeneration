@@ -15,6 +15,13 @@ using namespace std;
 
 void trav_Po_add_to_set( Abc_Obj_t * pNode, set<Abc_Obj_t*> pSet );
 
+class Weight_gate                     //save weight and PO's address
+{
+      public:
+              Abc_Obj_t* gate;
+              string name;
+              int        weight;
+};
 
 class ResourceAwarePatchGenerator
 {
@@ -26,7 +33,7 @@ class ResourceAwarePatchGenerator
       void read_file();    // Input F_file, G_file, W_file, read to initial_F, initial_G, gate_list 
       void delete_unused_PO();             // direct delete on initial F
       void pre_process();                  // preprocessing on initial F
-	  void read_weight();
+      void read_weight();
       void construct_t () {}                   // contrutct base on initial F
       void construct_DLN () {}          //transform initial circuit to DLN circuit 
       void transform_to_CNF () {}       //transform DLN circuit to CNF
@@ -36,15 +43,12 @@ class ResourceAwarePatchGenerator
       void functional_dependency() {}   //inculde above three step 
       void write_patch( const string patchedFileName, const string patchFileName );          //write the result to file as the competition format
     
+      //pre_process sub-function
+      
+	void DP_reduce_base_function (Abc_Ntk_t*, vector <Weight_gate*>&);
+	Abc_Ntk_t* convert_ntk_to_aig_with_base_func (Abc_Ntk_t*, vector<Weight_gate*>&);
   private:
       Abc_Frame_t* pAbc;
-      class Weight_gate                     //save weight and PO's address
-      {
-           public:
-                    Abc_Obj_t* gate;
-                    string name;
-                    int        weight;
-      };
 
 
       string in_F_file;

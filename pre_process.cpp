@@ -23,108 +23,58 @@ bool is_obj_in_vec ( T obj, vector<T> obj_vec)
 	return false;
 }	
 
+
+
 void ResourceAwarePatchGenerator:: pre_process()
 {
     cout<<"[INFO] preprocessing ..."<<endl;
-    cout<<"[INFO] add PO to base function and strash"<<endl;
+	cout << gate_list.size() << endl;
+	DP_reduce_base_function (initial_F, gate_list);
+	cout << gate_list.size() << endl;
+
+	Abc_Ntk_t* strashed_F = convert_ntk_to_aig_with_base_func (initial_F, gate_list);
+	//Abc_NtkMakeOnePo
+
 	
+	
+    	
+	
+	
+	
+}
+
+void ResourceAwarePatchGenerator::DP_reduce_base_function (Abc_Ntk_t* ntk, vector <Weight_gate*>& base_func_list)
+{
+	cout << "[INFO] DP reduce base function started" << endl;
+	vector<Weight_gate*> new_weight_gate;
 
 	Abc_Obj_t* iter_obj;
 	int i;
-	int initial_po_num=Abc_NtkPoNum(initial_F) ;
-        for (i=0;i<gate_list.size();i++)
-	{
-		/*
-		if (gate_list[i]->weight==10000)
-			continue;
-		*/
-		Abc_Obj_t* base_po=Abc_NtkCreatePo(initial_F);
-		Abc_ObjAddFanin (base_po,gate_list[i]->gate);
-		//gate_list[i]->gate=base_po;
-	}
-	Abc_Ntk_t* strashed_F=Abc_NtkStrash(initial_F,0,1,0);
-	for (i=0;i<gate_list.size();i++)
-	{
-		/*if (gate_list[i]->weight==10000)
-		{
-			continue;
-		}
-		*/
-		gate_list[i]->gate=Abc_ObjFanin0(Abc_NtkPo(strashed_F,i+initial_po_num));
-	}
-	for (i=initial_po_num;i<Abc_NtkPoNum(strashed_F);i++)
-	{
-		Abc_NtkDeleteObjPo(Abc_NtkPo(strashed_F,i));
-	}
-	/*
-        for (i=0;i<gate_list.size();i++)
-	{
-		Abc_Obj_t* temp_po=gate_list[i]->gate;
-		gate_list[i]->gate=Abc_ObjFanin0(gate_list[i]->gate);
-		Abc_NtkDeleteObjPo(temp_po);
-		
-		
-		cout << gate_list[i]->name << endl;
-		cout << gate_list[i]->gate << endl;
-	}
-	*/
-
-	
-	
-
-	/*
-	Abc_NtkForEachPi(initial_G, iter_obj,i)	
-	{
-		cout << Abc_ObjName(iter_obj) << endl;
-	}
-	*/
-	//fstream weight_input;
-	//weight_input.open( in_W_file.c_str(), ios::in );
-	string base_function_name;
-	int base_function_weight;
-	/*
-	while (weight_input>>base_function_name >> base_function_weight)	
-	{
-		 cout << endl;
-		 gate_list.push_back(new Weight_gate());                                                                   
-        	 Weight_gate* current_base=gate_list[gate_list.size()-1];                                                    
-        	 current_base->name=base_function_name;                                                                   
-        	 current_base->weight=base_function_weight;                                                              
-        	 Abc_NtkForEachPi(initial_F,iter_obj,i)                                                                 
-        	 {                                                                                                      
-            		 if (string(Abc_ObjName(iter_obj))==base_function_name)                                        
-                	 	cout << base_function_name <<endl;                                                           
-			 else
-				cout << "no" <<endl;
-        	 }        
-		
-	}
-	*/
 	map<Abc_Obj_t*,int> DP_cost;
-	//map<Abc_Obj_t*, vector<Abc_Obj_t*> > DP_optimal_base_node;
-	Abc_NtkForEachPi(strashed_F, iter_obj,i)	
+	Abc_NtkForEachPi(ntk, iter_obj,i)			//add pi into cost array, assume all pi is in base function	
 	{
-		cout << iter_obj << endl;
-		for (int j=0;j<gate_list.size();j++)
+		for (int j=0;j<base_func_list.size();j++)
 		{
-			if (gate_list[j]->gate==iter_obj)
+			if (base_func_list[j]->gate==iter_obj)
 			{
-				DP_cost[gate_list[j]->gate]=gate_list[j]->weight;
+				new_weight_gate.push_back(base_func_list[j]);
+				DP_cost[base_func_list[j]->gate]=base_func_list[j]->weight;
 				break;
 			}
-			if (j==gate_list.size()-1)
+			if (j==base_func_list.size()-1)
 				cout << "[WARNING] not all pi is in base function" << endl;
 			
 		}
 		
 	}
+
 	Vec_Ptr_t* DFS_ordered_gates;
-	DFS_ordered_gates=Abc_NtkDfs2(strashed_F);
-	vector<Weight_gate*> new_weight_gate;
+
+	DFS_ordered_gates=Abc_NtkDfs2(ntk);
 	Abc_Obj_t* iter_dfs_obj;
 
 
-	cout << "[INFO] DP reduce base function started" << endl;
+	int count=0;
 	int reduced_base_count=0;
 	Vec_PtrForEachEntry(Abc_Obj_t*, DFS_ordered_gates,iter_dfs_obj,i)
 	{
@@ -134,32 +84,66 @@ void ResourceAwarePatchGenerator:: pre_process()
 		{
 			dp_weight+=DP_cost[iter_obj];	
 		}
-		for (j=0;j<gate_list.size();j++)
+		for (j=0;j<base_func_list.size();j++)
 		{
-			if (gate_list[j]->gate==iter_dfs_obj)
+			if (base_func_list[j]->gate==iter_dfs_obj)
 			{
-				if (gate_list[j]->weight>dp_weight)
+				count ++;
+				if (base_func_list[j]->weight>dp_weight)
 				{
 					reduced_base_count+=1;
 				}
 				else
 				{
-					new_weight_gate.push_back(gate_list[j]);
-					dp_weight=gate_list[j]->weight;
+					new_weight_gate.push_back(base_func_list[j]);
+					dp_weight=base_func_list[j]->weight;
 				}
 				break;
 					
 				
 			}
+			if (j==base_func_list.size()-1)
+				cout << "[WARNING] not all base func found in dfs" << endl;
 		}
 		DP_cost[iter_dfs_obj]=dp_weight;
 	}
 	cout << "[INFO] " << reduced_base_count << " base function reduced" << endl;
-	gate_list=new_weight_gate;
+	base_func_list=new_weight_gate;
+}
+
+Abc_Ntk_t* ResourceAwarePatchGenerator::convert_ntk_to_aig_with_base_func (Abc_Ntk_t* initial_ntk, vector<Weight_gate*>& base_func_list)
+{
+	cout<<"[INFO] add PO to base function and strash"<<endl;
+	
+
+	int initial_po_num=Abc_NtkPoNum(initial_ntk) ;
+	int i;
+	cout << initial_po_num << endl;
+        for (i=0;i<base_func_list.size();i++)
+	{
+		if (Abc_ObjIsPo(base_func_list[i]->gate))
+			cout << "[Warning] base func is po" << endl;
+		Abc_Obj_t* base_po=Abc_NtkCreatePo(initial_ntk);
+		Abc_ObjAddFanin (base_po,base_func_list[i]->gate);
+	}
+	Abc_Ntk_t* strashed_F=Abc_NtkStrash(initial_ntk,0,1,0);
+	for (i=0;i<base_func_list.size();i++)
+	{
+		base_func_list[i]->gate=Abc_NtkPo(strashed_F,i+initial_po_num);
+	}
+ 	//[Warning] Delete Po is dangerous
+	cout << Abc_NtkPoNum(strashed_F) << endl; ;
+        for (i=0;i<base_func_list.size();i++)
+	{
+		Abc_Obj_t* temp_po=base_func_list[i]->gate;
+		base_func_list[i]->gate=Abc_ObjFanin0(base_func_list[i]->gate);
+		Abc_NtkDeleteObj(temp_po);
+		
+	}
+	cout << Abc_NtkPoNum(strashed_F) << endl;
+	return strashed_F;
 	//t_list
 	//t_Pi_list
 	//t_Po_list
-	
-	
-	
+
 }

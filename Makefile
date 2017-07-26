@@ -5,10 +5,10 @@ abcLib    := libabc.a
 abcFlags  := $(shell ./getAbcFlags.sh $(abcDir))
 
 PROG      := rpgen
-CXX       := g++
+CXX       := g++ 
 LD        := g++
 INC       := -I$(abcSrcDir)
-CXXFLAGS  := $(INC) $(abcFlags)
+CXXFLAGS  := $(INC) $(abcFlags) -g -O0
 LDFLAGS   := -lreadline -lpthread -ldl -lm
 
 all: $(PROG)
