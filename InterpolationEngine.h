@@ -14,11 +14,11 @@ extern "C"
   struct sat_solver;
 }
 
-class Interpolation
+class InterpolationEngine
 {
   public:
 
-    Interpolation();
+    InterpolationEngine();
 
     inline void setDln          ( const Abc_Ntk_t *dln                    );
     inline void setBaseFunctions( const vector<Abc_Obj_t*> &baseFunctions );
@@ -49,12 +49,12 @@ class Interpolation
 };
 
 // public inline member functions
-inline void Interpolation::setDln          ( const Abc_Ntk_t *dln                    )
+inline void InterpolationEngine::setDln          ( const Abc_Ntk_t *dln                    )
 { this->dln = dln; }
-inline void Interpolation::setBaseFunctions( const vector<Abc_Obj_t*> &baseFunctions )
+inline void InterpolationEngine::setBaseFunctions( const vector<Abc_Obj_t*> &baseFunctions )
 { this->baseFunctions = baseFunctions };
 
-inline Aig_Man_t* Interpolation::interpolant() { return mInterpolant; }
+inline Aig_Man_t* InterpolationEngine::interpolant() { return mInterpolant; }
 // end public inline member functions
 
 #endif
