@@ -22,13 +22,17 @@ int main( int argc, char *argv[] )
   ResourceAwarePatchGenerator solver( FFileName, GFileName, weightFileName);
   
   solver.read_file();
-  solver.delete_unused_PO();
   solver.read_weight();
-  solver.pre_process();
+  solver.replace_t_with_PI();
+  //solver.convert_ntk_to_aig_with_base_func();
+  solver.DP_reduce_base_function();
+  solver.delete_unused_PO();
+  solver.convert_ntk_to_aig_with_base_func();
+  //solver.pre_process();
   
   solver.construct_DLN();
   solver.functional_dependency();
-  solver.write_patch( patchFileName, patchedFileName );
+  //solver.write_patch( patchFileName, patchedFileName );
   
   return 0;
 }
