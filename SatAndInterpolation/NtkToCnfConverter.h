@@ -55,4 +55,16 @@ class NtkToCnfConverter
     Cnf_Dat_t   *mCnfOff;
 };
 
+inline void NtkToCnfConverter::setBaseFuncions   ( const vector<Abc_Obj_t*>  baseFunctions   )
+{ this->baseFunctions   = baseFunctions; }
+inline void NtkToCnfConverter::setTargetFunction ( const Abc_Obj_t           *targetFuction  )
+{ this->targetFunction  = targetFunction; }
+inline void NtkToCnfConverter::setCircuit        ( const Abc_Ntk_t           *circuit        )
+{ this->circuit         = circuit; }
+
+inline vector<int>  NtkToCnfConverter::literalsOn  () { return mLiteralsOn;   }
+inline vector<int>  NtkToCnfConverter::literalsOff () { return mLiteralsOff;  }
+inline Cnf_Dat_t*   NtkToCnfConverter::cnfOn       () { return mCnfOn;        }
+inline Cnf_Dat_t*   NtkToCnfConverter::cnfOff      () { return mCnfOff;       }
+
 #endif
