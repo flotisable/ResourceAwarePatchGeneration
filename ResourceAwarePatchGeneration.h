@@ -35,6 +35,7 @@ class ResourceAwarePatchGenerator
       ~ResourceAwarePatchGenerator();
 
       void read_file();    // Input F_file, G_file, W_file, read to initial_F, initial_G, gate_list 
+      void replace_t_with_PI() {}		//replace t with PI in initial F
       void delete_unused_PO();             // direct delete on initial F
       void pre_process();                  // preprocessing on initial F
       void read_weight();
@@ -49,8 +50,8 @@ class ResourceAwarePatchGenerator
     
       //pre_process sub-function
       
-	void DP_reduce_base_function (Abc_Ntk_t*, vector <Weight_gate*>&);
-	Abc_Ntk_t* convert_ntk_to_aig_with_base_func (Abc_Ntk_t*, vector<Weight_gate*>&);
+	void DP_reduce_base_function ();
+	void convert_ntk_to_aig_with_base_func ();
   private:
       Abc_Frame_t* pAbc;
 

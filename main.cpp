@@ -27,16 +27,26 @@ int main( int argc, char *argv[] )
   
 >>>>>>> 2c9ba856bc41976b3fda8534b6ae66ebb46b9f4f
   solver.read_file();
+<<<<<<< HEAD
   cout<<"start to delete_unused_PO"<<endl;
   solver.delete_unused_PO();
   cout<<"start to read_weight"<<endl;
   solver.read_weight();
   
   solver.pre_process();
+=======
+  solver.read_weight();
+  solver.replace_t_with_PI();
+  //solver.convert_ntk_to_aig_with_base_func();
+  solver.DP_reduce_base_function();
+  solver.delete_unused_PO();
+  solver.convert_ntk_to_aig_with_base_func();
+  //solver.pre_process();
+>>>>>>> d377efb33693893b3b06bf920f0871dc4a5606a5
   
   solver.construct_DLN();
   solver.functional_dependency();
-  solver.write_patch( patchFileName, patchedFileName );
+  //solver.write_patch( patchFileName, patchedFileName );
   
   return 0;
 }
