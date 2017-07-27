@@ -47,6 +47,9 @@ class InterpolationEngine
     Cnf_Dat_t *cnfB;
     Vec_Int_t *commonVariables;
 
+    vector<Abc_Obj_t*>  baseCopy;
+    Vec_Int_t           *commonCopy;
+
     sat_solver *satSolver;
 };
 
