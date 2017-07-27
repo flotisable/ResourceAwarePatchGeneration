@@ -1,7 +1,5 @@
 #include "InterpolationEngine.h"
 
-#include <algorithm>
-
 extern "C"
 {
 #include "base/abc/abc.h"
@@ -26,11 +24,6 @@ void InterpolationEngine::splitInterpolationAB()
 {
   if( !dln || !targetFunction ) return; // precondition
 
-  using std::find;
-
-  Abc_Obj_t *node;
-  int       i;
-
   ntkB = dln;
   ntkA = Abc_NtkDup( ntkB );
 
@@ -46,10 +39,28 @@ void InterpolationEngine::circuitToCnf()
 
   cnfA = Cnf_DeriveSimple( Aig_ManCoNum( aigA ) );
   cnfB = Cnf_DeriveSimple( Aig_ManCoNum( aigB ) );
+
+  Cnf_DataLift( cnfB, cnfA->nVars );
 }
 
 void InterpolationEngine::addClauseA()
 {
+  if( !cnfA ) return; // precondition
+
+  int *begin;
+  int *end;
+  int i;
+
+  satSolver = sat_solver_new();
+
+  sat_solver_store_alloc( satSolver );
+  sat_solver_setnvars   ( satSolver, cnfA->nVars + cnfB->nVars );
+
+  Cnf_CnfForClause( cnfA, begin, end, i )
+  {
+    sat_solver_addclause( satSolver, begin, end );
+  }
+  sat_solver_store_mark_clauses_a( satSolver );
 }
 
 void InterpolationEngine::addClauseB()
