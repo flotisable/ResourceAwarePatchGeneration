@@ -18,6 +18,7 @@ void ResourceAwarePatchGenerator::read_file()
     }
     initial_G = Abc_NtkDup(Abc_FrameReadNtk(pAbc));
     
+	
     /////////////////////////////////////////////////////////////////
     //                           read F file                       //
     /////////////////////////////////////////////////////////////////

@@ -6,3 +6,4 @@ tags
 Session.vim
 *.ps
 *.swp
+*.v

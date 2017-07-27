@@ -44,9 +44,11 @@ void ResourceAwarePatchGenerator::read_weight()
 		map< string, int >::iterator iter;
 		
 		if( ( iter = name_to_weight.find( string(name) ) ) != name_to_weight.end() ){    //this net weight is not defined
+		{
 			Weight_gate* temp = new Weight_gate;
 			temp->gate   = pObj;
 			temp->weight = iter->second;
+			temp->name=string(name);
 			
 			name_to_weight.erase( iter );
 			gate_list.push_back( temp );
