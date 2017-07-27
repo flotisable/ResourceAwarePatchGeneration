@@ -58,6 +58,9 @@ class ResourceAwarePatchGenerator
       Abc_Ntk_t*  initial_F;
       Abc_Ntk_t*  initial_G;
       vector <Weight_gate*> gate_list;
+
+      vector< set<Abc_Obj_t*> > t_fanoutPo, t_faninPi;
+
       Abc_Ntk_t*  target_function;
 
       Abc_Ntk_t*  DLN_circuit; 
