@@ -53,6 +53,9 @@ class NtkToCnfConverter
     vector<int> mLiteralsOff;
     Cnf_Dat_t   *mCnfOn;
     Cnf_Dat_t   *mCnfOff;
+
+    Abc_Ntk_t *ntkOn;
+    Abc_Ntk_t *ntkOff;
 };
 
 inline void NtkToCnfConverter::setBaseFuncions   ( const vector<Abc_Obj_t*>  baseFunctions   )
