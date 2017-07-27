@@ -9,7 +9,7 @@ int main( int argc, char *argv[] )
   {
     cerr << "wrong arguments number!\n";
     cerr << "arguments format:\n";
-    cerr << "rpgen <F.v> <G.v> <weight.txt> <patch.v> <out.v>";
+    cerr << "rpgen <F.v> <G.v> <weight.txt> <patch.v> <out.v>\n";
     return 1;
   }
 
