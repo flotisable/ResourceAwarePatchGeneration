@@ -56,8 +56,16 @@ class NtkToCnfConverter
 
     Abc_Ntk_t *ntkOn;
     Abc_Ntk_t *ntkOff;
+
+    vector<Abc_Obj_t*>  baseCopy;
+    Abc_Obj_t           *targetCopy;
 };
 
+// non-member functions
+int findLiteral( Aig_Man_t *aig, Cnf_Dat_t *cnf, Abc_Obj_t *target );
+// end non-member functions
+
+// public inline member functions
 inline void NtkToCnfConverter::setBaseFuncions   ( const vector<Abc_Obj_t*>  baseFunctions   )
 { this->baseFunctions   = baseFunctions; }
 inline void NtkToCnfConverter::setTargetFunction ( const Abc_Obj_t           *targetFuction  )
@@ -69,5 +77,6 @@ inline vector<int>  NtkToCnfConverter::literalsOn  () { return mLiteralsOn;   }
 inline vector<int>  NtkToCnfConverter::literalsOff () { return mLiteralsOff;  }
 inline Cnf_Dat_t*   NtkToCnfConverter::cnfOn       () { return mCnfOn;        }
 inline Cnf_Dat_t*   NtkToCnfConverter::cnfOff      () { return mCnfOff;       }
+// end public inline member functions
 
 #endif
