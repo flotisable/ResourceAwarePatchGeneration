@@ -1,7 +1,7 @@
 #include "ResourceAwarePatchGeneration.h"
 #include <fstream>
-
-
+ 
+ 
 using namespace std;
 extern "C"
 {
@@ -14,7 +14,7 @@ void ResourceAwarePatchGenerator:: pre_process()
 {
     cout<<"[INFO] preprocessing ..."<<endl;
 
-	Abc_Obj_t* iter_obj;
+	/*Abc_Obj_t* iter_obj;
 	int i;
 	Abc_NtkForEachObj(initial_G, iter_obj,i)	
 	{
@@ -37,5 +37,5 @@ void ResourceAwarePatchGenerator:: pre_process()
         	 }        
 		
 	}
-
+	*/
 }

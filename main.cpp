@@ -1,7 +1,7 @@
 #include <iostream>
 #include "ResourceAwarePatchGeneration.h"
 
-using namespace std;
+using namespace std; 
 
 int main( int argc, char *argv[] )
 {
@@ -14,10 +14,13 @@ int main( int argc, char *argv[] )
   }
 
   ResourceAwarePatchGenerator solver( argv[1], argv[2], argv[3], argv[4], argv[5] );
-  
+  cout<<"start to read_file"<<endl;
   solver.read_file();
+  cout<<"start to delete_unused_PO"<<endl;
   solver.delete_unused_PO();
+  cout<<"start to read_weight"<<endl;
   solver.read_weight();
+  
   solver.pre_process();
   
   solver.construct_DLN();

@@ -10,7 +10,7 @@ LD        := g++
 INC       := -I$(abcSrcDir)
 CXXFLAGS  := $(INC) $(abcFlags)
 LDFLAGS   := -lreadline -lpthread -ldl -lm
-
+ 
 all: $(PROG)
 
 $(PROG): pre_process.o read_file.o delete_unused_PO.o trav_Po_add_to_set.o read_weight.o main.o ResourceAwarePatchGeneration.o $(abcLibDir)/$(abcLib) 

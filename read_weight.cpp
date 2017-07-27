@@ -1,6 +1,6 @@
 #include "ResourceAwarePatchGeneration.h"
 #include <fstream>
-#include <map>
+#include <map> 
 
 using namespace std;
 
@@ -18,8 +18,11 @@ void ResourceAwarePatchGenerator::read_weight()
 	
 	while( weight_file>>net_name>>net_weight ){
 		name_to_weight[net_name] = net_weight;
-		//cout<<"  net_name: "<<net_name<<endl;
-		//cout<<"  net_weight: "<<net_weight<<endl;
+		
+		#ifdef DEBUG
+		  cout<<"  net_name: "<<net_name<<endl;
+		  cout<<"  net_weight: "<<net_weight<<endl;
+		#endif
 	}
 	weight_file.close();
 	
@@ -29,8 +32,6 @@ void ResourceAwarePatchGenerator::read_weight()
 	///////////////////////////////////////////////////////////////
 	int i;
 	Abc_Obj_t *pObj;
-	char* name;
-	map< string, int >::iterator iter;
 	
 	Abc_NtkForEachObj( initial_F, pObj, i ){
 		//visit all node in ntk
@@ -38,29 +39,24 @@ void ResourceAwarePatchGenerator::read_weight()
 		if( Abc_ObjIsPo( pObj ) )//because output net will cause 2 obj
 			continue;
 
-		name = Abc_ObjName( pObj ) ;
+		char *name = Abc_ObjName( pObj );
 		
-		iter = name_to_weight.find( string(name) );
+		map< string, int >::iterator iter;
 		
-		Weight_gate* temp = new Weight_gate;
-		
-		if( iter == name_to_weight.end() ){    //this net weight is not defined
-			temp->gate   = pObj;
-			temp->weight = WEIGHT_MAX;
-		}
-		else{
+		if( ( iter = name_to_weight.find( string(name) ) ) != name_to_weight.end() ){    //this net weight is not defined
+			Weight_gate* temp = new Weight_gate;
 			temp->gate   = pObj;
 			temp->weight = iter->second;
 			
 			name_to_weight.erase( iter );
+			gate_list.push_back( temp );
+			
+			#ifdef DEBUG
+			  cout<<"  gate_list "<<i<<endl;
+			  cout<<"    gate name: "<<Abc_ObjName( temp->gate )<<endl;
+			  cout<<"    gate weight:"<<temp->weight<<endl;
+			#endif
 		}
-		
-		gate_list.push_back( temp );
-		
-		cout<<"  gate_list "<<i<<endl;
-		cout<<"    gate name: "<<Abc_ObjName( temp->gate )<<endl;
-		cout<<"    gate weight:"<<temp->weight<<endl;
 	}
-	
 	//cout<<"gate_list.size()=="<<gate_list.size()<<endl;
 }
