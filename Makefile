@@ -48,5 +48,8 @@ write_patch.o: write_patch.cpp
 $(satAndInterDir)/interpolation.o :
 	$(MAKE) -e -C $(satAndInterDir)
 
+debug: CXXFLAGS += -g -O
+debug: all
+
 clean:
 	rm *.o $(PROG)
