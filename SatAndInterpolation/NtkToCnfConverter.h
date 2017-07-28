@@ -10,6 +10,7 @@ extern "C"
   struct Abc_Obj_t;
   struct Abc_Ntk_t;
   struct Cnf_Dat_t;
+  struct Aig_Man_t;
 }
 // end abc related declaration
 
@@ -24,14 +25,16 @@ extern "C"
 
 class NtkToCnfConverter
 {
+  friend class TestNtkToCnfConverter;
+
   public:
 
     NtkToCnfConverter();
     ~NtkToCnfConverter();
 
     inline void setBaseFuncions   ( const vector<Abc_Obj_t*>  baseFunctions   );
-    inline void setTargetFunction ( const Abc_Obj_t           *targetFuction  );
-    inline void setCircuit        ( const Abc_Ntk_t           *circuit        );
+    inline void setTargetFunction ( Abc_Obj_t                 *targetFuction  );
+    inline void setCircuit        ( Abc_Ntk_t                 *circuit        );
 
     inline vector<int>  literalsOn  ();
     inline vector<int>  literalsOff ();
@@ -66,11 +69,11 @@ int findLiteral( Aig_Man_t *aig, Cnf_Dat_t *cnf, Abc_Obj_t *target );
 // end non-member functions
 
 // public inline member functions
-inline void NtkToCnfConverter::setBaseFuncions   ( const vector<Abc_Obj_t*>  baseFunctions   )
+inline void NtkToCnfConverter::setBaseFuncions   ( const vector<Abc_Obj_t*> baseFunctions   )
 { this->baseFunctions   = baseFunctions; }
-inline void NtkToCnfConverter::setTargetFunction ( const Abc_Obj_t           *targetFuction  )
+inline void NtkToCnfConverter::setTargetFunction ( Abc_Obj_t                *targetFuction  )
 { this->targetFunction  = targetFunction; }
-inline void NtkToCnfConverter::setCircuit        ( const Abc_Ntk_t           *circuit        )
+inline void NtkToCnfConverter::setCircuit        ( Abc_Ntk_t                *circuit        )
 { this->circuit         = circuit; }
 
 inline vector<int>  NtkToCnfConverter::literalsOn  () { return mLiteralsOn;   }

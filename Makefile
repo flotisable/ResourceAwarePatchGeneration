@@ -51,5 +51,8 @@ $(satAndInterDir)/interpolation.o :
 debug: CXXFLAGS += -g -O
 debug: all
 
+testNtkToCnfConverter:
+	$(MAKE) -e -C Test/TestNtkToCnfConverter
+
 clean:
 	rm *.o $(PROG)
