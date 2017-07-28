@@ -1,6 +1,6 @@
 #include "TestNtkToCnfConverter.h"
 
-TestNtkToCnfConverter::TestNtkToConverter()
+TestNtkToCnfConverter::TestNtkToCnfConverter()
 {
 }
 
@@ -8,14 +8,14 @@ TestNtkToCnfConverter::~TestNtkToCnfConverter()
 {
 }
 
-TestNtkToCnfConverter::test()
+void TestNtkToCnfConverter::test()
 {
 }
 
-TestNtkToCnfConverter::testCreateOnOffCircuit()
+void TestNtkToCnfConverter::testCreateOnOffCircuit()
 {
 }
 
-TestNtkToCnfConverter::testCircuitToCnf()
+void TestNtkToCnfConverter::testCircuitToCnf()
 {
 }

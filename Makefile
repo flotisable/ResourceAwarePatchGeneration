@@ -6,6 +6,7 @@ abcFlags  := $(shell ./getAbcFlags.sh $(abcDir))
 
 projectDir			:= $(PWD)
 satAndInterDir 	:= SatAndInterpolation
+testDir					:= Test
 
 PROG      := rpgen
 CXX       := g++ 
@@ -52,7 +53,9 @@ debug: CXXFLAGS += -g -O
 debug: all
 
 testNtkToCnfConverter:
-	$(MAKE) -e -C Test/TestNtkToCnfConverter
+	$(MAKE) -e -C $(testDir)/TestNtkToCnfConverter
 
 clean:
+	$(MAKE) -C $(satAndInterDir) clean
+	$(MAKE) -C $(testDir)/TestNtkToCnfConverter clean
 	rm *.o $(PROG)

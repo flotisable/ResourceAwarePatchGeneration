@@ -8,3 +8,6 @@ main.o: main.cpp
 
 TestNtkToCnfConverter.o: TestNtkToCnfConverter.cpp TestNtkToCnfConverter.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+clean:
+	rm test *.o

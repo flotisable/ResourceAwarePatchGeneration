@@ -33,7 +33,7 @@ class NtkToCnfConverter
     ~NtkToCnfConverter();
 
     inline void setBaseFuncions   ( const vector<Abc_Obj_t*>  baseFunctions   );
-    inline void setTargetFunction ( Abc_Obj_t                 *targetFuction  );
+    inline void setTargetFunction ( Abc_Obj_t                 *targetFunction );
     inline void setCircuit        ( Abc_Ntk_t                 *circuit        );
 
     inline vector<int>  literalsOn  ();
@@ -71,7 +71,7 @@ int findLiteral( Aig_Man_t *aig, Cnf_Dat_t *cnf, Abc_Obj_t *target );
 // public inline member functions
 inline void NtkToCnfConverter::setBaseFuncions   ( const vector<Abc_Obj_t*> baseFunctions   )
 { this->baseFunctions   = baseFunctions; }
-inline void NtkToCnfConverter::setTargetFunction ( Abc_Obj_t                *targetFuction  )
+inline void NtkToCnfConverter::setTargetFunction ( Abc_Obj_t                *targetFunction )
 { this->targetFunction  = targetFunction; }
 inline void NtkToCnfConverter::setCircuit        ( Abc_Ntk_t                *circuit        )
 { this->circuit         = circuit; }
