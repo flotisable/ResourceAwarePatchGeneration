@@ -1,12 +1,17 @@
 #include "NtkToCnfConverter.h"
 
+extern "C"
+{
+  Aig_Man_t* Abc_NtkToDar( Abc_Ntk_t*, int, int );
+}
+
 int findLiteral( Aig_Man_t *aig, Cnf_Dat_t *cnf, Abc_Obj_t *target )
 {
   Aig_Obj_t *co;
   int       i;
 
-  Aig_ManForEachCo( aig, co, j )
-    if( co == Abc_ObjCopy( target ) )
+  Aig_ManForEachCo( aig, co, i )
+    if( co == reinterpret_cast<Aig_Obj_t*>( Abc_ObjCopy( target ) ) )
       return cnf->pVarNums[co->Id];
 
   return -1;
@@ -26,11 +31,11 @@ NtkToCnfConverter::~NtkToCnfConverter()
   if( mCnfOff ) Cnf_DataFree( mCnfOff );
 }
 
-NtkToCnfConverter::convert()
+void NtkToCnfConverter::convert()
 {
 }
 
-NtkToCnfConverter::createOnOffCircuit()
+void NtkToCnfConverter::createOnOffCircuit()
 {
   if( !circuit || !targetFunction ) return; // precondition
 
@@ -38,15 +43,19 @@ NtkToCnfConverter::createOnOffCircuit()
   int       i;
 
   ntkOn   = circuit;
-  ntkOff  = Abc_NtkDup( ntkOff );
+  ntkOff  = Abc_NtkDup( ntkOn );
 
   // complement output of off circuit
   Abc_NtkForEachPo( ntkOn, po, i )
     if( po == targetFunction )
     {
-      targetCopy = Abc_NtkPo( ntkOff, i );
+      Abc_Obj_t *outInv;
 
-      Abc_NodeComplement( Abc_ObjFanin0( targetCopy ) );
+      targetCopy  = Abc_NtkPo( ntkOff, i );
+      outInv      = Abc_ObjNot( Abc_ObjFanin0( targetCopy ) );
+
+      Abc_ObjDeleteFanin( targetCopy, Abc_ObjFanin0( targetCopy ) );
+      Abc_ObjAddFanin   ( targetCopy, outInv                      );
       break;
     }
   // end complement output of off circuit
@@ -66,7 +75,7 @@ NtkToCnfConverter::createOnOffCircuit()
   // end save po in off circuit that is corresponding to base functions
 }
 
-NtkToCnfConverter::circuitToCnf()
+void NtkToCnfConverter::circuitToCnf()
 {
   if( !ntkOn || !ntkOff ) return; // precondition
 
@@ -77,10 +86,10 @@ NtkToCnfConverter::circuitToCnf()
   Aig_Man_t *aigOn  = Abc_NtkToDar( ntkOn,  0, 0 );
   Aig_Man_t *aigOff = Abc_NtkToDar( ntkOff, 0, 0 );
 
-  mCnfOn  = Cnf_DeriveSimple( Aig_ManCoNum( aigOn   ) );
-  mCnfOff = Cnf_DeriveSimple( Aig_ManCoNum( aigOff  ) );
+  mCnfOn  = Cnf_DeriveSimple( aigOn,  Aig_ManCoNum( aigOn   ) );
+  mCnfOff = Cnf_DeriveSimple( aigOff, Aig_ManCoNum( aigOff  ) );
 
-  Cnf_DataLift( cnfOff, cnfA->nVars );
+  Cnf_DataLift( mCnfOff, mCnfOn->nVars );
   // end conver to cnf
 
   // save literals

@@ -7,10 +7,9 @@ using std::vector;
 // abc related declaration
 extern "C"
 {
-  struct Abc_Obj_t;
-  struct Abc_Ntk_t;
-  struct Cnf_Dat_t;
-  struct Aig_Man_t;
+#include "base/abc/abc.h"
+#include "sat/cnf/cnf.h"
+#include "aig/aig/aig.h"
 }
 // end abc related declaration
 
