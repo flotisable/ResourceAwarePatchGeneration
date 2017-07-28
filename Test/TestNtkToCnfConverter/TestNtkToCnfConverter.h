@@ -1,6 +1,7 @@
 #ifndef TEST_NTK_TO_CNF_CONVERTER_H
 #define TEST_NTK_TO_CNF_CONVERTER_H
 
+#include <vector>
 #include <string>
 
 #include "SatAndInterpolation/NtkToCnfConverter.h"
@@ -27,6 +28,7 @@ class TestNtkToCnfConverter
     NtkToCnfConverter converter;
 };
 
-void writeCircuit( const std::string &outFile, Abc_Ntk_t *circuit );
+Abc_Obj_t*  findPo      ( Abc_Ntk_t *circuit, const std::string &name );
+void        writeCircuit( const std::string &outFile, Abc_Ntk_t *circuit );
 
 #endif

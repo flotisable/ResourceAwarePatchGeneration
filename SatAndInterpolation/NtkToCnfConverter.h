@@ -61,6 +61,11 @@ class NtkToCnfConverter
 
     vector<Abc_Obj_t*>  baseCopy;
     Abc_Obj_t           *targetCopy;
+
+    // for test purpose
+    Aig_Man_t *aigOn;
+    Aig_Man_t *aigOff;
+    // end for test purpose
 };
 
 // non-member functions

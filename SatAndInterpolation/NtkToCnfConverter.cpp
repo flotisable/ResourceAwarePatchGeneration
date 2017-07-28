@@ -11,7 +11,7 @@ int findLiteral( Aig_Man_t *aig, Cnf_Dat_t *cnf, Abc_Obj_t *target )
   int       i;
 
   Aig_ManForEachCo( aig, co, i )
-    if( co == reinterpret_cast<Aig_Obj_t*>( Abc_ObjCopy( target ) ) )
+    if( Aig_ObjFanin0( co ) == reinterpret_cast<Aig_Obj_t*>( Abc_ObjCopy( Abc_ObjFanin0( target )  ) ) )
       return cnf->pVarNums[co->Id];
 
   return -1;
@@ -22,13 +22,16 @@ NtkToCnfConverter::NtkToCnfConverter()
   targetFunction  = NULL;
   circuit         = NULL;
 
-  mCnfOn = mCnfOff = NULL;
+  mCnfOn  = mCnfOff = NULL;
+  aigOn   = aigOff  = NULL;
 }
 
 NtkToCnfConverter::~NtkToCnfConverter()
 {
   if( mCnfOn  ) Cnf_DataFree( mCnfOn  );
   if( mCnfOff ) Cnf_DataFree( mCnfOff );
+  if( aigOn   ) Aig_ManStop ( aigOn   );
+  if( aigOff  ) Aig_ManStop ( aigOff  );
 }
 
 void NtkToCnfConverter::convert()
@@ -83,8 +86,8 @@ void NtkToCnfConverter::circuitToCnf()
   int       i;
 
   // conver to cnf
-  Aig_Man_t *aigOn  = Abc_NtkToDar( ntkOn,  0, 0 );
-  Aig_Man_t *aigOff = Abc_NtkToDar( ntkOff, 0, 0 );
+  aigOn  = Abc_NtkToDar( ntkOn,  0, 0 );
+  aigOff = Abc_NtkToDar( ntkOff, 0, 0 );
 
   mCnfOn  = Cnf_DeriveSimple( aigOn,  Aig_ManCoNum( aigOn   ) );
   mCnfOff = Cnf_DeriveSimple( aigOff, Aig_ManCoNum( aigOff  ) );
@@ -102,9 +105,4 @@ void NtkToCnfConverter::circuitToCnf()
   for( int i = 0 ; i < baseCopy.size() ; ++i )
      mLiteralsOff.push_back( findLiteral( aigOff, mCnfOff, baseCopy[i] ) );
   // end save literals
-
-  // release memory
-  Aig_ManStop( aigOn  );
-  Aig_ManStop( aigOff );
-  // end release memory
 }
