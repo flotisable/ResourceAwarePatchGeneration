@@ -26,7 +26,7 @@ void ResourceAwarePatchGenerator::write_patch( const string patchFileName, const
   // end write patch circuit
 
   // write patched circuit
-  ifstream  fileFv   ( in_F_file.c_str()   );
+  ifstream  fileFv   ( in_F_file.c_str()        );
   ofstream  fileFvOut( patchedFileName.c_str()  );
   string    buffer;
 
@@ -36,14 +36,13 @@ void ResourceAwarePatchGenerator::write_patch( const string patchFileName, const
     {
       int       i;
       Abc_Obj_t *pObj;
-      Abc_Obj_t *pNet;
 
       fileFvOut << patchName << " p0(";
 
       // write patch output name
       Abc_NtkForEachPo( pNtk, pObj, i )
       {
-        pNet = Abc_ObjFanin0( pObj );
+        Abc_Obj_t *pNet = Abc_ObjFanin0( pObj );
 
         fileFvOut << Abc_ObjName( pNet ) << ",";
       }
@@ -51,7 +50,7 @@ void ResourceAwarePatchGenerator::write_patch( const string patchFileName, const
       // write patch input name
       Abc_NtkForEachPi( pNtk, pObj, i )
       {
-        pNet = Abc_ObjFanout0( pObj );
+        Abc_Obj_t *pNet = Abc_ObjFanout0( pObj );
 
         fileFvOut << Abc_ObjName( pNet );
         if( i + 1 != Abc_NtkPiNum( pNtk ) )
