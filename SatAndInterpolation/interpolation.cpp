@@ -13,7 +13,7 @@ extern Aig_Man_t* Abc_NtkToDar( Abc_Ntk_t*, int, int );
 
 void ResourceAwarePatchGenerator::interpolation()
 {
-  sat_solver  *sat_result = NULL;
+  sat_solver  *sat_result;
   Sto_Man_t   *cnf;
   Intb_Man_t  *intManager = Intb_ManAlloc();
 

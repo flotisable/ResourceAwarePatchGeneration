@@ -41,7 +41,7 @@ class ResourceAwarePatchGenerator
       void delete_unused_PO();             // direct delete on initial F
       void pre_process();                  // preprocessing on initial F
       void read_weight();
-      void construct_t () {}                   // contrutct base on initial F
+      void construct_t (bool);                // contrutct base on initial F
       void construct_DLN () {}          //transform initial circuit to DLN circuit 
       void transform_to_CNF () {}       //transform DLN circuit to CNF
       void sat_solve () {}          //solve CNF by sat
@@ -49,14 +49,14 @@ class ResourceAwarePatchGenerator
       
       void functional_dependency() {}   //inculde above three step 
       void write_patch( const string patchedFileName, const string patchFileName );          //write the result to file as the competition format
-    
+
     //sub-function
       //construct pi and po list
       void recursive_trav_Po_add_to_set( Abc_Obj_t*, set<Abc_Obj_t*> );
       void recursive_trav_Pi_add_to_set( Abc_Obj_t*, set<Abc_Obj_t*> );
       //pre_process 
 	    void DP_reduce_base_function ();
-	  void convert_ntk_to_aig_with_base_func ();
+	    void convert_ntk_to_aig_with_base_func (bool);
   private:
       Abc_Frame_t* pAbc;
 
@@ -65,6 +65,7 @@ class ResourceAwarePatchGenerator
       string in_W_file;
 
       Abc_Ntk_t*  initial_F;
+      int initial_F_PO_num;
       Abc_Ntk_t*  initial_G;
       vector <Weight_gate*> gate_list;
 

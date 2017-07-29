@@ -8,8 +8,6 @@ using namespace std;
 void ResourceAwarePatchGenerator::delete_unused_PO()
 {
     cout<<"[INFO] delete unused PO ..."<<endl;
-    
-    
 
     int i;
     Abc_Obj_t *pNode, *pPo, *pPi;  

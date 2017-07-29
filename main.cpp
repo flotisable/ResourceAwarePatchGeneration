@@ -9,7 +9,7 @@ int main( int argc, char *argv[] )
   {
     cerr << "wrong arguments number!\n";
     cerr << "arguments format:\n";
-    cerr << "rpgen <F.v> <G.v> <weight.txt> <patch.v> <out.v>";
+    cerr << "rpgen <F.v> <G.v> <weight.txt> <patch.v> <out.v>\n";
     return 1;
   }
   string FFileName        = argv[1];  
@@ -27,13 +27,19 @@ int main( int argc, char *argv[] )
 
   //solver.convert_ntk_to_aig_with_base_func();
   //solver.DP_reduce_base_function();
-  solver.delete_unused_PO();//t fanout cone po, t fanout and fanin cone pi
+
   //solver.convert_ntk_to_aig_with_base_func();
-  //solver.pre_process();
+
+  solver.DP_reduce_base_function();
+  solver.delete_unused_PO();//t fanout cone po, t fanout and fanin cone pi
+  solver.convert_ntk_to_aig_with_base_func(false);
+  solver.construct_t(true);
+
+  solver.pre_process();
   
-  //solver.construct_DLN();
-  //solver.functional_dependency();
-  //solver.write_patch( patchFileName, patchedFileName );
+  solver.construct_DLN();
+  solver.functional_dependency();
+  solver.write_patch( patchFileName, patchedFileName );
   
   return 0;
 }

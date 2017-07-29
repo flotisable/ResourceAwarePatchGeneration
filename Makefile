@@ -4,26 +4,33 @@ abcLibDir := $(abcDir)
 abcLib    := libabc.a
 abcFlags  := $(shell ./getAbcFlags.sh $(abcDir))
 
+projectDir			:= $(PWD)
+satAndInterDir 	:= SatAndInterpolation
+testDir					:= Test
+
 PROG      := rpgen
 CXX       := g++ 
 LD        := g++
-INC       := -I$(abcSrcDir)
-CXXFLAGS  := $(INC) $(abcFlags) -g -O0
+INC       := -I$(projectDir) -I$(abcSrcDir)
+CXXFLAGS  := $(INC) $(abcFlags)
 LDFLAGS   := -lreadline -lpthread -ldl -lm
- 
+
+export
+
 all: $(PROG)
 
 $(PROG): pre_process.o \
 	     trav_Pi_add_to_set.o \
 	     replace_t_with_PI.o \
+	     construct_t.o \
 	     read_file.o \
 	     delete_unused_PO.o \
 	     trav_Po_add_to_set.o \
 	     read_weight.o main.o \
 	     ResourceAwarePatchGeneration.o \
 	     write_patch.o \
-	     interpolation.o \
-	     traverse_t_PI_and_PO.o \
+	     $(satAndInterDir)/interpolation.o \
+	     $(satAndInterDir)/NtkToCnfConverter.o \
 	     $(abcLibDir)/$(abcLib) 
 	$(LD) $(LDFLAGS) -o $@ $^
 
@@ -57,11 +64,22 @@ replace_t_with_PI.o: replace_t_with_PI.cpp ResourceAwarePatchGeneration.h
 read_weight.o: read_weight.cpp ResourceAwarePatchGeneration.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $< 
 
+construct_t.o: construct_t.cpp ResourceAwarePatchGeneration.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+
 write_patch.o: write_patch.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $< 
 
-interpolation.o: interpolation.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+$(satAndInterDir)/interpolation.o $(satAndInterDir)/NtkToCnfConverter.o:
+	$(MAKE) -e -C $(satAndInterDir)
+
+debug: CXXFLAGS += -g -O
+debug: all
+
+testNtkToCnfConverter:
+	$(MAKE) -e -C $(testDir)/TestNtkToCnfConverter
 
 clean:
 	rm *.o $(PROG)
+	$(MAKE) -C $(satAndInterDir) clean
+	$(MAKE) -C $(testDir)/TestNtkToCnfConverter clean
