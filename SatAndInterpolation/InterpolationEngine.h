@@ -43,6 +43,8 @@ class InterpolationEngine
     sat_solver *satSolver;
 };
 
+inline void addClause( sat_solver *satSolver, Cnf_Dat_t *cnf );
+
 // public inline member functions
 inline void InterpolationEngine::setDln           ( Abc_Ntk_t *dln )
 { this->dln = dln; }
@@ -54,4 +56,11 @@ inline void InterpolationEngine::setTargetFunction( Abc_Obj_t *targetFunction )
 inline Aig_Man_t* InterpolationEngine::interpolant() { return mInterpolant; }
 // end public inline member functions
 
+inline void addClause( sat_solver *satSolver, Cnf_Dat_t *cnf )
+{
+  int *begin, *end, i;
+
+  Cnf_CnfForClause( cnf, begin, end, i )
+    sat_solver_addclause( satSolver, begin, end );
+}
 #endif

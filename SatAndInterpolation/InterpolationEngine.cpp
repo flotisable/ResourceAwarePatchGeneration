@@ -1,19 +1,11 @@
 #include "InterpolationEngine.h"
 
-extern "C"
-{
-#include "base/abc/abc.h"
-#include "aig/aig/aig.h"
-#include "sat/cnf/cnf.h"
-#include "sat/bsat/satSolver.h"
-}
-
 InterpolationEngine::InterpolationEngine()
 {
-  dln           = NULL;
-  mInterpolant  = NULL;
-
-  satSolver = NULL;
+  dln             = NULL;
+  targetFunction  = NULL;
+  mInterpolant    = NULL;
+  satSolver       = NULL;
 }
 
 void InterpolationEngine::circuitToCnf()
@@ -31,10 +23,6 @@ void InterpolationEngine::addClauseA()
 {
   if( !converter.cnfOn() ) return; // precondition
 
-  int *begin;
-  int *end;
-  int i;
-
   // setup sat solver
   satSolver = sat_solver_new();
 
@@ -43,10 +31,7 @@ void InterpolationEngine::addClauseA()
   // end setup sat solver
 
   // add clause A
-  Cnf_CnfForClause( converter.cnfOn(), begin, end, i )
-  {
-    sat_solver_addclause( satSolver, begin, end );
-  }
+  addClause( satSolver, converter.cnfOn() );
   sat_solver_store_mark_clauses_a( satSolver );
   // end add clause A
 }
@@ -55,16 +40,10 @@ void InterpolationEngine::addClauseB()
 {
   if( !converter.cnfOff() || !satSolver ) return; // precondition
 
-  int *begin;
-  int *end;
-  int i;
   int lits[3];
 
   // add clause B
-  Cnf_CnfForClause( converter.cnfOff(), begin, end, i )
-  {
-    sat_solver_addclause( satSolver, begin, end );
-  }
+  addClause( satSolver, converter.cnfOff() );
   // end add clause B
 
   // add common variables clause
