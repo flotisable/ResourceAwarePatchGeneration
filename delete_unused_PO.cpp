@@ -32,7 +32,7 @@ void ResourceAwarePatchGenerator::delete_unused_PO()
 		}
     }
 
-    //delete unuse Po on G
+    //delete unuse Pi on G
     Abc_NtkForEachPi( initial_G, pPi, i ){
         set<Abc_Obj_t*>::iterator it = depend_to_target_Pi.find( pPo );
         if( it == depend_to_target_Pi.end() ){ //it isn't t fanout Po
@@ -67,4 +67,7 @@ void ResourceAwarePatchGenerator::delete_unused_PO()
 	cout<<"Abc_NtkObjNum "<< Abc_NtkObjNum(initial_F)<<endl;
 	cout<<"Abc_NtkObjNum G "<< Abc_NtkObjNum(initial_G)<<endl;
     
+
+    Io_WriteBlifLogic( initial_F, "F_network.blif", 0 );
+    Io_WriteBlifLogic( initial_G, "G_network.blif", 0 );
 }

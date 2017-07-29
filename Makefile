@@ -20,6 +20,7 @@ export
 all: $(PROG)
 
 $(PROG): pre_process.o \
+	     traverse_t_PI_and_PO.o \
 	     trav_Pi_add_to_set.o \
 	     replace_t_with_PI.o \
 	     construct_t.o \

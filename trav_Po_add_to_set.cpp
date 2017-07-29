@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void ResourceAwarePatchGenerator::recursive_trav_Po_add_to_set( Abc_Obj_t* pNode, set<Abc_Obj_t*> pSet )
+void ResourceAwarePatchGenerator::recursive_trav_Po_add_to_set( Abc_Obj_t* pNode, set<Abc_Obj_t*>& pSet )
 {
     //cout<<"recursive_trav_Po_add_to_set..."<<endl;
     Abc_Obj_t * pFanout;
@@ -23,7 +23,9 @@ void ResourceAwarePatchGenerator::recursive_trav_Po_add_to_set( Abc_Obj_t* pNode
     ////    return;
     //assert( Abc_ObjIsNode( pNode ) );
     // visit the transitive fanin of the node
-    pNode = Abc_ObjFanout0(pNode);
+    //pNode = Abc_ObjFanout0(pNode);
+
+    //cout<<"name:                            "<<Abc_ObjName(pNode)<<endl;
     Abc_ObjForEachFanout( pNode, pFanout, i )
         recursive_trav_Po_add_to_set( pFanout, pSet );
 }
