@@ -1,6 +1,6 @@
 all: test
 
-test: main.o TestNtkToCnfConverter.o $(projectDir)/$(satAndInterDir)/NtkToCnfConverter.o $(abcLibDir)/$(abcLib)
+test: main.o TestNtkToCnfConverter.o $(satAndInterDir)/NtkToCnfConverter.o $(abcLibDir)/$(abcLib)
 	$(LD) $(LDFLAGS) -o $@ $^
 
 main.o: main.cpp
@@ -10,7 +10,7 @@ TestNtkToCnfConverter.o: TestNtkToCnfConverter.cpp TestNtkToCnfConverter.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 $(satAndInterDir)/NtkToCnfConverter.o:
-	$(MAKE) -e -C $(projectDir)/$(satAndInterDir)
+	$(MAKE) -e -C $(satAndInterDir)
 
 clean:
 	rm test *.o

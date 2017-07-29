@@ -10,7 +10,7 @@ TestInterpolationEngine.o: TestInterpolationEngine.cpp TestInterpolationEngine.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 $(satAndInterDir)/InterpolationEngine.o $(satAndInterDir)/NtkToCnfConverter.o:
-	$(MAKE) -e -C $(projectDir)/$(satAndInterDir)
+	$(MAKE) -e -C $(satAndInterDir)
 
 clean:
 	rm test *.o

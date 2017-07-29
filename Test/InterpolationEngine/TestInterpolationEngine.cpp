@@ -1,6 +1,7 @@
 #include "TestInterpolationEngine.h"
 
 #include <string>
+#include <iostream>
 
 extern "C"
 {
@@ -35,6 +36,7 @@ TestInterpolationEngine::~TestInterpolationEngine()
 void TestInterpolationEngine::test()
 {
   using std::string;
+  using std::cout;
 
   const string inFile   = "test.v";
   const string outFile  = "testOut.v";
@@ -45,10 +47,10 @@ void TestInterpolationEngine::test()
   engine.setTargetFunction( targetFunction  );
   engine.setBaseFunctions ( baseFunctions   );
 
-  engine.circuitToCnf ();
-  engine.addClauseA   ();
-  engine.addClauseB   ();
-  engine.interpolation();
+  engine.circuitToCnf (); cout << "convert to cnf\n";
+  engine.addClauseA   (); cout << "add clause A\n";
+  engine.addClauseB   (); cout << "add clause B\n";
+  engine.interpolation(); cout << "interpolation\n";
 
   interpolant = Abc_NtkFromDar( dln, engine.interpolant() );
 
@@ -63,8 +65,17 @@ void TestInterpolationEngine::read( const std::string &file )
 
   targetFunction = findPo( dln, "out" );
 
+  if( !targetFunction )
+  {
+    std::cout << "can not find po\n";
+    return;
+  }
+
   baseFunctions.push_back( findPo( dln, "g1" ) );
   baseFunctions.push_back( findPo( dln, "g2" ) );
+
+  if( !baseFunctions[0] || !baseFunctions[1] )
+    std::cout << "can not find base functions\n";
 }
 
 void TestInterpolationEngine::write( const std::string &file )

@@ -1,5 +1,7 @@
 #include "InterpolationEngine.h"
 
+#include <iostream>
+
 extern "C"
 {
 #include "sat/bsat/satStore.h"
@@ -27,6 +29,7 @@ void InterpolationEngine::circuitToCnf()
 void InterpolationEngine::addClauseA()
 {
   if( !converter.cnfOn() ) return; // precondition
+  std::cout << "add clause A\n";
 
   // setup sat solver
   satSolver = sat_solver_new();
@@ -44,6 +47,7 @@ void InterpolationEngine::addClauseA()
 void InterpolationEngine::addClauseB()
 {
   if( !converter.cnfOff() || !satSolver ) return; // precondition
+  std::cout << "add Clause B\n";
 
   int lits[3];
 
@@ -52,17 +56,19 @@ void InterpolationEngine::addClauseB()
   // end add clause B
 
   // add common variables clause
-  for( int i = 0 ; i < baseFunctions.size() ; ++i )
+  for( int i = 1 ; i < baseFunctions.size() ; ++i )
   {
-     lits[0] = toLitCond( converter.literalsOn ()[i+1], 0 );
-     lits[1] = toLitCond( converter.literalsOff()[i+1], 1 );
+     lits[0] = toLitCond( converter.literalsOn ()[i], 0 );
+     lits[1] = toLitCond( converter.literalsOff()[i], 1 );
 
-     sat_solver_addclause( satSolver, lits, lits + 2 );
+     if( !sat_solver_addclause( satSolver, lits, lits + 2 ) )
+       std::cout << "clause add error!\n";
 
-     lits[0] = toLitCond( converter.literalsOn ()[i+1], 1 );
-     lits[1] = toLitCond( converter.literalsOff()[i+1], 0 );
+     lits[0] = toLitCond( converter.literalsOn ()[i], 1 );
+     lits[1] = toLitCond( converter.literalsOff()[i], 0 );
 
-     sat_solver_addclause( satSolver, lits, lits + 2 );
+     if ( !sat_solver_addclause( satSolver, lits, lits + 2 ) )
+       std::cout << "clause add error!\n";
   }
   // end add common variables clause
 
@@ -72,6 +78,7 @@ void InterpolationEngine::addClauseB()
 void InterpolationEngine::interpolation()
 {
   if( !satSolver ) return; // precondition
+  std::cout << "interpolation\n";
 
   lit         unitAssumption[3];
   Sto_Man_t   *proof;
@@ -81,7 +88,12 @@ void InterpolationEngine::interpolation()
   unitAssumption[0] = toLitCond( converter.literalsOn ()[0], 0 );
   unitAssumption[1] = toLitCond( converter.literalsOff()[0], 0 );
 
-  if( sat_solver_solve( satSolver, unitAssumption, unitAssumption + 2, 0, 0, 0, 0  ) != l_False ) return;
+  if( sat_solver_solve( satSolver, unitAssumption, unitAssumption + 2, 0, 0, 0, 0  ) != l_False ) 
+  {
+    std::cout << "sat\n";
+    return;
+  };
+  std::cout << "unsat\n";
 
   proof           = static_cast<Sto_Man_t*>( sat_solver_store_release( satSolver ) );
   commonVariables = Vec_IntAlloc( converter.literalsOn().size() - 1 );
