@@ -12,7 +12,6 @@ void ResourceAwarePatchGenerator::delete_unused_PO()
     int i;
     Abc_Obj_t *pNode, *pPo, *pPi;  
     char *name;
-    
 
     //delete unuse Po on F and G
     Abc_NtkForEachPo( initial_F, pPo, i ){
@@ -31,10 +30,9 @@ void ResourceAwarePatchGenerator::delete_unused_PO()
 			//cout<<"this Po is in t_i fanout cone"<<endl;
 		}
     }
-
     //delete unuse Pi on G
     Abc_NtkForEachPi( initial_G, pPi, i ){
-        set<Abc_Obj_t*>::iterator it = depend_to_target_Pi.find( pPo );
+        set<Abc_Obj_t*>::iterator it = depend_to_target_Pi.find( pPi );
         if( it == depend_to_target_Pi.end() ){ //it isn't t fanout Po
             Abc_NtkDeleteObj( pPi ); //G
         }
@@ -47,10 +45,10 @@ void ResourceAwarePatchGenerator::delete_unused_PO()
 	cout<<"G before strash "<< Abc_NtkObjNum(initial_G)<<endl;
 
     Abc_Ntk_t* temp_Ntk;
-	//temp_Ntk = Abc_NtkStrash( initial_G, 0, 1, 0 );
-    //Abc_NtkDelete( initial_G );
-    //initial_G = temp_Ntk;
-    //temp_Ntk = NULL;
+	temp_Ntk = Abc_NtkStrash( initial_G, 0, 1, 0 );
+    Abc_NtkDelete( initial_G );
+    initial_G = temp_Ntk;
+    temp_Ntk = NULL;
 
 	cout<<"G after strash "<< Abc_NtkObjNum(initial_G)<<endl;
 

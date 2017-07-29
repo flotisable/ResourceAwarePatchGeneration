@@ -1,6 +1,8 @@
 #include "ResourceAwarePatchGeneration.h"
 #include <map>
 
+//#define DEBUG_READ_FILE
+
 using namespace std;
 
 void ResourceAwarePatchGenerator::read_file()
@@ -63,4 +65,6 @@ void ResourceAwarePatchGenerator::read_file()
 		  else
 			  cout<<"F's input "<<Abc_ObjName(pObj)<<" is not found in G's Pi"<<endl;
 		#endif
+
+
 }
