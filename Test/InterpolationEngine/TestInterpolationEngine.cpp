@@ -49,3 +49,11 @@ void TestInterpolationEngine::read( const std::string &file )
   baseFunctions.push_back( findPo( dln, "g1" ) );
   baseFunctions.push_back( findPo( dln, "g2" ) );
 }
+
+void TestInterpolationEngine::write( const std::string &file )
+{
+  interpolant = Abc_NtkToNetlist( interpolant );
+
+  Abc_NtkToAig( interpolant );
+  Io_WriteVerilog( interpolant, const_cast<char*>( file.c_str() ) );
+}
