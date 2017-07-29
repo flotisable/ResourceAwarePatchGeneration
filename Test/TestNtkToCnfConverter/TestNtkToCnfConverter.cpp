@@ -74,7 +74,7 @@ void TestNtkToCnfConverter::test()
 
   converter.setCircuit        ( circuit );
   converter.setTargetFunction ( target  );
-  converter.setBaseFuncions   ( bases   );
+  converter.setBaseFunctions  ( bases   );
 
   testCreateOnOffCircuit();
   testCircuitToCnf      ();
