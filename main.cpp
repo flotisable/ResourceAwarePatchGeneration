@@ -27,8 +27,8 @@ int main( int argc, char *argv[] )
   //solver.convert_ntk_to_aig_with_base_func();
   solver.DP_reduce_base_function();
   solver.delete_unused_PO();
-  //solver.convert_ntk_to_aig_with_base_func(false);
-  solver.construct_t();
+  solver.convert_ntk_to_aig_with_base_func(false);
+  solver.construct_t(bool);
   //solver.pre_process();
   
   solver.construct_DLN();

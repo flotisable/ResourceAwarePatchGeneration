@@ -32,7 +32,7 @@ void ResourceAwarePatchGenerator:: pre_process()
 	DP_reduce_base_function ();
 	cout << gate_list.size() << endl;
 
-	convert_ntk_to_aig_with_base_func ();
+	convert_ntk_to_aig_with_base_func (false);
 	//Abc_NtkMakeOnePo
 
 	
@@ -109,12 +109,13 @@ void ResourceAwarePatchGenerator::DP_reduce_base_function ()
 	gate_list=new_weight_gate;
 }
 
-void ResourceAwarePatchGenerator::convert_ntk_to_aig_with_base_func ()
+void ResourceAwarePatchGenerator::convert_ntk_to_aig_with_base_func (bool delete_PO)
 {
 	cout<<"[INFO] add PO to base function and strash"<<endl;
 	
 
 	int initial_po_num=Abc_NtkPoNum(initial_F) ;
+	initial_F_PO_num=initial_po_num;
 	int i;
 	cout << initial_po_num << endl;
         for (i=0;i<gate_list.size();i++)
@@ -131,12 +132,15 @@ void ResourceAwarePatchGenerator::convert_ntk_to_aig_with_base_func ()
 	}
  	//[Warning] Delete Po is dangerous
 	cout << Abc_NtkPoNum(strashed_F) << endl; ;
-        for (i=0;i<gate_list.size();i++)
+	if (delete_PO)
 	{
-		Abc_Obj_t* temp_po=gate_list[i]->gate;
-		gate_list[i]->gate=Abc_ObjFanin0(gate_list[i]->gate);
-		Abc_NtkDeleteObj(temp_po);
+        	for (i=0;i<gate_list.size();i++)
+		{
+			Abc_Obj_t* temp_po=gate_list[i]->gate;
+			gate_list[i]->gate=Abc_ObjFanin0(gate_list[i]->gate);
+			Abc_NtkDeleteObj(temp_po);
 		
+		}
 	}
 	cout << Abc_NtkPoNum(strashed_F) << endl;
 	initial_F=strashed_F;

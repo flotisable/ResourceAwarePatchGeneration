@@ -47,7 +47,7 @@ class ResourceAwarePatchGenerator
       //pre_process sub-function
       
 	void DP_reduce_base_function ();
-	void convert_ntk_to_aig_with_base_func ();
+	void convert_ntk_to_aig_with_base_func (bool);
   private:
       Abc_Frame_t* pAbc;
 
@@ -57,6 +57,7 @@ class ResourceAwarePatchGenerator
       string in_W_file;
 
       Abc_Ntk_t*  initial_F;
+      int initial_F_PO_num;
       Abc_Ntk_t*  initial_G;
       vector <Weight_gate*> gate_list;
       Abc_Ntk_t*  target_function;
