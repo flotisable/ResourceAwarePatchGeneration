@@ -1,156 +1,113 @@
 #include "InterpolationEngine.h"
 
+#include <iostream>
+
 extern "C"
 {
-#include "base/abc/abc.h"
-#include "aig/aig/aig.h"
-#include "sat/cnf/cnf.h"
-#include "sat/bsat/satSolver.h"
+#include "sat/bsat/satStore.h"
 }
 
 InterpolationEngine::InterpolationEngine()
 {
-  dln           = NULL;
-  mInterpolant  = NULL;
-
-  ntkA = ntkB = NULL;
-  cnfA = cnfB = NULL;
-
-  commonVariables = NULL;
-  sat_solver      = NULL;
-}
-
-void InterpolationEngine::splitInterpolationAB()
-{
-  if( !dln || !targetFunction ) return; // precondition
-
-  ntkA = dln;
-  ntkB = Abc_NtkDup( ntkA );
-
-  Abc_NodeComplement( Abc_ObjCopy( targetFunction ) );
-
-  // save the copy of base function in networks B
-  for( int i = 0 ; i < baseFunctions.size() ; ++i )
-  {
-     baseCopy.push_back( Abc_ObjCopy( baseFunctions[i] ) );
-  }
-  // end save the copy of base function in networks B
+  dln             = NULL;
+  targetFunction  = NULL;
+  mInterpolant    = NULL;
+  satSolver       = NULL;
 }
 
 void InterpolationEngine::circuitToCnf()
 {
-  if( !ntkA || !ntkB ) return; // precondition
+  if( !dln || !targetFunction || baseFunctions.empty() ) return; // precondition
 
-  Aig_Obj_t *node;
-  int       i;
+  converter.setCircuit       ( dln             );
+  converter.setTargetFunction( targetFunction  );
+  converter.setBaseFunctions ( baseFunctions   );
 
-  Aig_Man_t *aigA = Abc_NtkToDar( ntkA, 0, 0 );
-  Aig_Man_t *aigB = Abc_NtkToDar( ntkB, 0, 0 );
-
-  cnfA = Cnf_DeriveSimple( Aig_ManCoNum( aigA ) );
-  cnfB = Cnf_DeriveSimple( Aig_ManCoNum( aigB ) );
-
-  Cnf_DataLift( cnfB, cnfA->nVars );
-
-  // save common variables
-  Aig_ManForEachObj( aigA, node, i )
-  {
-    for( int j = 0 ; j < baseFunctions.size() ; ++j )
-    {
-       if( node == baseFunctions[j] )
-         goto matched;
-    }
-    continue;
-
-matched:
-
-    Vec_Int_Push( commonVariables, cnfA->pVarNums[node->Id] );
-  }
-  // end save common variables
-
-  // save common variables copy
-  Aig_ManForEachObj( aigB, node, i )
-  {
-    for( int j = 0 ; j < baseCopy.size() ; ++j )
-    {
-       if( node == baseCopy[j] )
-         goto matchedCopy;
-    }
-    continue;
-
-matchedCopy:
-
-    Vec_Int_Push( commonCopy, cnfB->pVarNums[node->Id] );
-  }
-  // end save common variables
+  converter.convert();
 }
 
 void InterpolationEngine::addClauseA()
 {
-  if( !cnfA ) return; // precondition
-
-  int *begin;
-  int *end;
-  int i;
+  if( !converter.cnfOn() ) return; // precondition
+  std::cout << "add clause A\n";
 
   // setup sat solver
   satSolver = sat_solver_new();
 
   sat_solver_store_alloc( satSolver );
-  sat_solver_setnvars   ( satSolver, cnfA->nVars + cnfB->nVars );
+  sat_solver_setnvars   ( satSolver, converter.cnfOn()->nVars + converter.cnfOff()->nVars );
   // end setup sat solver
 
   // add clause A
-  Cnf_CnfForClause( cnfA, begin, end, i )
-  {
-    sat_solver_addclause( satSolver, begin, end );
-  }
+  addClause( satSolver, converter.cnfOn() );
   sat_solver_store_mark_clauses_a( satSolver );
   // end add clause A
 }
 
 void InterpolationEngine::addClauseB()
 {
-  if( !cnfB || !satSolver ) return; // precondition
+  if( !converter.cnfOff() || !satSolver ) return; // precondition
+  std::cout << "add Clause B\n";
 
-  int *begin;
-  int *end;
-  int i;
   int lits[3];
 
   // add clause B
-  Cnf_CnfForClause( cnfB, begin, end, i )
-  {
-    sat_solver_addclause( satSolver, begin, end );
-  }
+  addClause( satSolver, converter.cnfOff() );
   // end add clause B
 
   // add common variables clause
-  for( int i = 0 ; i < baseFunctions.size() ; ++i )
+  for( int i = 1 ; i < baseFunctions.size() ; ++i )
   {
-     lits[0] = toLitCond( Vec_IntEntry( commonVariables, i ), 0 );
-     lits[1] = toLitCond( Vec_IntEntry( commonCopy,      i ), 1 );
+     lits[0] = toLitCond( converter.literalsOn ()[i], 0 );
+     lits[1] = toLitCond( converter.literalsOff()[i], 1 );
 
-     sat_solver_addclause( satSolver, lit, lit + 2 );
+     if( !sat_solver_addclause( satSolver, lits, lits + 2 ) )
+       std::cout << "clause add error!\n";
 
-     lits[0] = toLitCond( Vec_IntEntry( commonVariables, i ), 1 );
-     lits[1] = toLitCond( Vec_IntEntry( commonCopy,      i ), 0 );
+     lits[0] = toLitCond( converter.literalsOn ()[i], 1 );
+     lits[1] = toLitCond( converter.literalsOff()[i], 0 );
 
-     sat_solver_addclause( satSolver, lit, lit + 2 );
+     if ( !sat_solver_addclause( satSolver, lits, lits + 2 ) )
+       std::cout << "clause add error!\n";
   }
   // end add common variables clause
 
   sat_solver_store_mark_roots( satSolver );
-
-  // free the memory
-  Aig_ManStop ( aigA );
-  Aig_ManStop ( aigB );
-  Cnf_DataFree( cnfA );
-  Cnf_DataFree( cnfB );
-  // end free the memory
 }
 
 void InterpolationEngine::interpolation()
 {
-}
+  if( !satSolver ) return; // precondition
+  std::cout << "interpolation\n";
 
+  lit         unitAssumption[3];
+  Sto_Man_t   *proof;
+  Inta_Man_t  *interMan;
+  Vec_Int_t   *commonVariables;
+
+  unitAssumption[0] = toLitCond( converter.literalsOn ()[0], 0 );
+  unitAssumption[1] = toLitCond( converter.literalsOff()[0], 0 );
+
+  if( sat_solver_solve( satSolver, unitAssumption, unitAssumption + 2, 0, 0, 0, 0  ) != l_False ) 
+  {
+    std::cout << "sat\n";
+    return;
+  };
+  std::cout << "unsat\n";
+
+  proof           = static_cast<Sto_Man_t*>( sat_solver_store_release( satSolver ) );
+  commonVariables = Vec_IntAlloc( converter.literalsOn().size() - 1 );
+
+  sat_solver_delete( satSolver );
+
+  for( int i = 1 ; i < converter.literalsOn().size() ; ++i )
+     Vec_IntPush( commonVariables, converter.literalsOn()[i] );
+
+  satSolver     = NULL;
+  interMan      = Inta_ManAlloc();
+  mInterpolant  = static_cast<Aig_Man_t*>( Inta_ManInterpolate( interMan, proof, 0, commonVariables, 0 ) );
+
+  Inta_ManFree( interMan        );
+  Vec_IntFree ( commonVariables );
+  Sto_ManFree ( proof           );
+}
