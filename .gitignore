@@ -7,4 +7,5 @@ Session.vim
 *.ps
 *.swp
 *.v
-Test/TestNtkToCnfConverter/test
+Test/NtkToCnfConverter/test
+Test/InterpolationEngine/test

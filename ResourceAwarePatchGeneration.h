@@ -10,6 +10,7 @@ extern "C"
 {
 #include "base/main/mainInt.h"
 #include "base/abc/abc.h"
+#include "base/io/ioAbc.h"
 }
 
 using namespace std;
@@ -52,8 +53,8 @@ class ResourceAwarePatchGenerator
 
     //sub-function
       //construct pi and po list
-      void recursive_trav_Po_add_to_set( Abc_Obj_t*, set<Abc_Obj_t*> );
-      void recursive_trav_Pi_add_to_set( Abc_Obj_t*, set<Abc_Obj_t*> );
+      void recursive_trav_Po_add_to_set( Abc_Obj_t*, set<Abc_Obj_t*>& );
+      void recursive_trav_Pi_add_to_set( Abc_Obj_t*, set<Abc_Obj_t*>& );
       //pre_process 
 	    void DP_reduce_base_function ();
 	    void convert_ntk_to_aig_with_base_func (bool);

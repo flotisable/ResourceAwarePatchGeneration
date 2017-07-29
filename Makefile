@@ -5,8 +5,8 @@ abcLib    := libabc.a
 abcFlags  := $(shell ./getAbcFlags.sh $(abcDir))
 
 projectDir			:= $(PWD)
-satAndInterDir 	:= SatAndInterpolation
-testDir					:= Test
+satAndInterDir 	:= $(projectDir)/SatAndInterpolation
+testDir					:= $(projectDir)/Test
 
 PROG      := rpgen
 CXX       := g++ 
@@ -20,10 +20,10 @@ export
 all: $(PROG)
 
 $(PROG): pre_process.o \
+	     traverse_t_PI_and_PO.o \
 	     trav_Pi_add_to_set.o \
 	     replace_t_with_PI.o \
 	     construct_t.o \
-	     traverse_t_PI_and_PO.o \
 	     read_file.o \
 	     delete_unused_PO.o \
 	     trav_Po_add_to_set.o \
@@ -32,6 +32,7 @@ $(PROG): pre_process.o \
 	     write_patch.o \
 	     $(satAndInterDir)/interpolation.o \
 	     $(satAndInterDir)/NtkToCnfConverter.o \
+			 $(satAndInterDir)/InterpolationEngine.o \
 	     $(abcLibDir)/$(abcLib) 
 	$(LD) $(LDFLAGS) -o $@ $^
 
@@ -71,16 +72,18 @@ construct_t.o: construct_t.cpp ResourceAwarePatchGeneration.h
 write_patch.o: write_patch.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $< 
 
-$(satAndInterDir)/interpolation.o $(satAndInterDir)/NtkToCnfConverter.o:
+$(satAndInterDir)/interpolation.o $(satAndInterDir)/NtkToCnfConverter.o $(satAndInterDir)/InterpolationEngine.o:
 	$(MAKE) -e -C $(satAndInterDir)
 
 debug: CXXFLAGS += -g -O
 debug: all
 
 testNtkToCnfConverter:
-	$(MAKE) -e -C $(testDir)/TestNtkToCnfConverter
+	$(MAKE) -e -C $(testDir)/NtkToCnfConverter
+
+testInterpolationEngine:
+	$(MAKE) -e -C $(testDir)/InterpolationEngine
 
 clean:
 	rm *.o $(PROG)
 	$(MAKE) -C $(satAndInterDir) clean
-	$(MAKE) -C $(testDir)/TestNtkToCnfConverter clean

@@ -21,11 +21,18 @@ void ResourceAwarePatchGenerator::traverse_t_PI_and_PO()
 //cout<<"21"<<endl;
     //construct Po_fanin_Pi
     Abc_NtkIncrementTravId( initial_G );
+
+    set<Abc_Obj_t*> current_Po_fanin_Pi_set;
+
     Abc_NtkForEachPo( initial_G, pPo, i ){
-    	set<Abc_Obj_t*> current_Po_fanin_Pi_set;
     	recursive_trav_Pi_add_to_set( pPo, current_Po_fanin_Pi_set );
 
+        depend_to_target_Pi.insert( current_Po_fanin_Pi_set.begin(), current_Po_fanin_Pi_set.end() );                 //cout<<"19"<<endl;
+
     	Po_fanin_Pi[ pPo ] = current_Po_fanin_Pi_set;
+        //cout<<"current_Po_fanin_Pi_set.size(): "<<current_Po_fanin_Pi_set.size()<<endl;
+        current_Po_fanin_Pi_set.clear();
+        //cout<<"33"<<endl;
     }
 //cout<<"30"<<endl;
 

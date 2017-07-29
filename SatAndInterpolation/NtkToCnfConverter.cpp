@@ -12,7 +12,7 @@ int findLiteral( Aig_Man_t *aig, Cnf_Dat_t *cnf, Abc_Obj_t *target )
 
   Aig_ManForEachCo( aig, co, i )
     if( Aig_ObjFanin0( co ) == reinterpret_cast<Aig_Obj_t*>( Abc_ObjCopy( Abc_ObjFanin0( target )  ) ) )
-      return cnf->pVarNums[co->Id];
+      return cnf->pVarNums[Aig_ObjFanin0( co )->Id];
 
   return -1;
 }
@@ -36,6 +36,8 @@ NtkToCnfConverter::~NtkToCnfConverter()
 
 void NtkToCnfConverter::convert()
 {
+  createOnOffCircuit();
+  circuitToCnf      ();
 }
 
 void NtkToCnfConverter::createOnOffCircuit()
@@ -89,8 +91,8 @@ void NtkToCnfConverter::circuitToCnf()
   aigOn  = Abc_NtkToDar( ntkOn,  0, 0 );
   aigOff = Abc_NtkToDar( ntkOff, 0, 0 );
 
-  mCnfOn  = Cnf_DeriveSimple( aigOn,  Aig_ManCoNum( aigOn   ) );
-  mCnfOff = Cnf_DeriveSimple( aigOff, Aig_ManCoNum( aigOff  ) );
+  mCnfOn  = Cnf_DeriveSimple( aigOn,  0 );
+  mCnfOff = Cnf_DeriveSimple( aigOff, 0 );
 
   Cnf_DataLift( mCnfOff, mCnfOn->nVars );
   // end conver to cnf
