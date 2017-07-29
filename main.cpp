@@ -25,21 +25,16 @@ int main( int argc, char *argv[] )
   solver.replace_t_with_PI();//replace t to Pi, t_list,
   solver.traverse_t_PI_and_PO();//replace t to Pi, t_list,
 
-  //solver.convert_ntk_to_aig_with_base_func();
-  //solver.DP_reduce_base_function();
-
-  //solver.convert_ntk_to_aig_with_base_func();
-
   solver.DP_reduce_base_function();
   solver.delete_unused_PO();//t fanout cone po, t fanout and fanin cone pi
   solver.convert_ntk_to_aig_with_base_func(false);
   solver.construct_t(true);
 
-  solver.pre_process();
+  //solver.pre_process();
   
-  solver.construct_DLN();
-  solver.functional_dependency();
-  solver.write_patch( patchFileName, patchedFileName );
+  //solver.construct_DLN();
+  //solver.functional_dependency();
+  //solver.write_patch( patchFileName, patchedFileName );
   
   return 0;
 }

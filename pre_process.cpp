@@ -53,6 +53,11 @@ void ResourceAwarePatchGenerator::DP_reduce_base_function ()
 	map<Abc_Obj_t*,int> DP_cost;
 	Abc_NtkForEachPi(initial_F, iter_obj,i)			//add pi into cost array, assume all pi is in base function	
 	{
+		if (is_obj_in_vec(iter_obj,t_list))
+		{
+			DP_cost[iter_obj]=-10000;
+			continue;
+		}
 		for (int j=0;j<gate_list.size();j++)
 		{
 			if (gate_list[j]->gate==iter_obj)
@@ -61,8 +66,12 @@ void ResourceAwarePatchGenerator::DP_reduce_base_function ()
 				DP_cost[gate_list[j]->gate]=gate_list[j]->weight;
 				break;
 			}
+				 
 			if (j==gate_list.size()-1)
+			{
 				cout << "[WARNING] not all pi is in base function" << endl;
+				
+			}
 			
 		}
 		
@@ -125,11 +134,31 @@ void ResourceAwarePatchGenerator::convert_ntk_to_aig_with_base_func (bool delete
 		Abc_Obj_t* base_po=Abc_NtkCreatePo(initial_F);
 		Abc_ObjAddFanin (base_po,gate_list[i]->gate);
 	}
+	
+	//deal with target part
+	/*
+	for (i=0;i<t_list.size();i++)
+	{
+		Abc_Obj_t* t_po=Abc_NtkCreatePo(initial_F);
+		Abc_ObjAddFanin (t_po,t_list[i]);
+	}
+	*/
+	
 	Abc_Ntk_t* strashed_F=Abc_NtkStrash(initial_F,0,1,0);
 	for (i=0;i<gate_list.size();i++)
 	{
 		gate_list[i]->gate=Abc_NtkPo(strashed_F,i+initial_po_num);
 	}
+	/*
+	for (i=0;i<t_list.size();i++)
+	{
+		Abc_Obj_t* t_po=Abc_NtkCreatePo(initial_F);
+		Abc_ObjAddFanin (t_po,t_list[i]);
+	}
+	*/
+
+
+
  	//[Warning] Delete Po is dangerous
 	cout << Abc_NtkPoNum(strashed_F) << endl; ;
 	if (delete_PO)

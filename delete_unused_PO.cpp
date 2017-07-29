@@ -47,10 +47,10 @@ void ResourceAwarePatchGenerator::delete_unused_PO()
 	cout<<"G before strash "<< Abc_NtkObjNum(initial_G)<<endl;
 
     Abc_Ntk_t* temp_Ntk;
-	temp_Ntk = Abc_NtkStrash( initial_G, 0, 1, 0 );
-    Abc_NtkDelete( initial_G );
-    initial_G = temp_Ntk;
-    temp_Ntk = NULL;
+	//temp_Ntk = Abc_NtkStrash( initial_G, 0, 1, 0 );
+    //Abc_NtkDelete( initial_G );
+    //initial_G = temp_Ntk;
+    //temp_Ntk = NULL;
 
 	cout<<"G after strash "<< Abc_NtkObjNum(initial_G)<<endl;
 

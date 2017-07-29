@@ -7,21 +7,36 @@ void traverse_from_current_to_pi (Abc_Ntk_t* ,Abc_Obj_t* );
 
 void ResourceAwarePatchGenerator::construct_t(bool single_target)
 {
-	
+	cout << "[INFO] start to construct t" << endl;	
 	if (single_target)
 	{
 		Abc_Obj_t* iter_obj; 
 		Abc_Obj_t* iter_pi;
 		Abc_Obj_t* iter_po;
 		int i;
-		Abc_Aig_t* pMan=(Abc_Aig_t*)initial_F->pManFunc; 
+		//Abc_Aig_t* pMan=(Abc_Aig_t*)initial_F->pManFunc; 
 		Abc_Obj_t* const1=Abc_AigConst1(initial_F);
-		const1=Abc_AigAnd(pMan,const1,const1);
-		Abc_ObjSetCopy(const1,Abc_ObjNot(const1));
-		
+		Abc_Obj_t* const0=Abc_ObjNot(const1);
+	 	Abc_Ntk_t* t_ntk=Abc_NtkAlloc(ABC_NTK_STRASH,ABC_FUNC_AIG,1);
 		//Abc_Obj_t* const1=Abc_NtkCreateConst1(initial_F);
+	 	Abc_NtkForEachPi(initial_F,iter_pi,i)
+		{
+			Abc_ObjSetCopy(iter_pi,Abc_NtkCreatePi(t_ntk));
+		}
+		Abc_ObjSetCopy(t_list[0],const1);
+		Abc_ObjSetData(t_list[0],const0);
 
-		/*
+		Abc_NtkForEachPo(initial_F,iter_po,i)
+		{
+			if (i<initial_F_PO_num)
+			{
+				traverse_from_current_to_pi(t_ntk,Abc_ObjFanin0(iter_po));
+			}	
+		}
+		
+		
+
+		/*	
 		Abc_ObjForEachFanout(t_list[0],iter_obj,i)
 		{
 			Abc_ObjAddFanin(iter_obj,const1);	
@@ -31,7 +46,6 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 	 	{
 			Abc_ObjSetCopy(iter_pi,iter_pi);
 	 	}
-		*/
 		
   		//solver.convert_ntk_to_aig_with_base_func(false);
 	 	Abc_NtkForEachPo(initial_F,iter_po,i)
@@ -39,6 +53,7 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 			if (i<initial_F_PO_num)
 				traverse_from_current_to_pi(initial_F,iter_po);
 		}
+		*/
 	}
 }
 
@@ -71,10 +86,19 @@ void traverse_from_current_to_pi (Abc_Ntk_t* new_ntk,Abc_Obj_t* current_node)
 	//cout << Abc_ObjChild0Copy(current_node) <<" " << Abc_ObjChild1Copy(current_node) << endl;
 	if (Abc_ObjIsPo(current_node))
 		return;
-	else if (Abc_ObjChild0Copy(current_node)==Abc_ObjChild0(current_node)&&Abc_ObjChild1Copy(current_node)==Abc_ObjChild1(current_node))
-		Abc_ObjSetCopy(current_node,current_node);
-	else
-		Abc_ObjSetCopy(current_node,Abc_AigAnd((Abc_Aig_t*)(new_ntk->pManFunc),Abc_ObjChild0Copy(current_node),Abc_ObjChild1Copy(current_node)));
+	Abc_ObjSetCopy(current_node,Abc_AigAnd((Abc_Aig_t*)(new_ntk->pManFunc),Abc_ObjChild0Copy(current_node),Abc_ObjChild1Copy(current_node)));
+	if (Abc_ObjChild0Data(current_node)!=0&&Abc_ObjChild1Data(current_node)!=0)
+	{
+		Abc_ObjSetData(current_node,Abc_AigAnd((Abc_Aig_t*)(new_ntk->pManFunc),Abc_ObjChild0Data(current_node),Abc_ObjChild1Data(current_node)));
+	}
+	else if (Abc_ObjChild0Data(current_node)!=0&&Abc_ObjChild1Data(current_node)==0)
+	{
+		Abc_ObjSetData(current_node,Abc_AigAnd((Abc_Aig_t*)(new_ntk->pManFunc),Abc_ObjChild0Data(current_node),Abc_ObjChild1Copy(current_node)));
+	}
+	else if (Abc_ObjChild0Data(current_node)==0&&Abc_ObjChild1Data(current_node)!=0)
+	{
+		Abc_ObjSetData(current_node,Abc_AigAnd((Abc_Aig_t*)(new_ntk->pManFunc),Abc_ObjChild0Copy(current_node),Abc_ObjChild1Data(current_node)));
+	}
 		
 	//count++;
 	//cout << count << endl;
