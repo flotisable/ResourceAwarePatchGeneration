@@ -35,7 +35,7 @@ class ResourceAwarePatchGenerator
       void delete_unused_PO();             // direct delete on initial F
       void pre_process();                  // preprocessing on initial F
       void read_weight();
-      void construct_t () {}                   // contrutct base on initial F
+      void construct_t (bool);                // contrutct base on initial F
       void construct_DLN () {}          //transform initial circuit to DLN circuit 
       void transform_to_CNF () {}       //transform DLN circuit to CNF
       void sat_solve () {}          //solve CNF by sat

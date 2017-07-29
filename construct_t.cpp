@@ -1,7 +1,9 @@
-#include "ResourceAwarePatchGenerator.h"
+#include "ResourceAwarePatchGeneration.h"
 #include <iostream>
 
 using namespace std;
+
+void traverse_from_current_to_pi (Abc_Ntk_t* ,Abc_Obj_t* );
 
 void ResourceAwarePatchGenerator::construct_t(bool single_target)
 {
@@ -18,18 +20,21 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 		Abc_ObjSetCopy(const1,Abc_ObjNot(const1));
 		
 		//Abc_Obj_t* const1=Abc_NtkCreateConst1(initial_F);
+
+		/*
 		Abc_ObjForEachFanout(t_list[0],iter_obj,i)
 		{
 			Abc_ObjAddFanin(iter_obj,const1);	
 		}	
 		Abc_NtkDeleteObj(t_list[0]);
-	 	Abc_NtkForEachPi(pNtk,iter_pi,i)
+	 	Abc_NtkForEachPi(initial_F,iter_pi,i)
 	 	{
 			Abc_ObjSetCopy(iter_pi,iter_pi);
 	 	}
+		*/
 		
   		//solver.convert_ntk_to_aig_with_base_func(false);
-	 	Abc_NtkForEachPO(pNtk,iter_po,i)
+	 	Abc_NtkForEachPo(initial_F,iter_po,i)
 		{
 			if (i<initial_F_PO_num)
 				traverse_from_current_to_pi(initial_F,iter_po);
@@ -40,13 +45,13 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 
 void recursive_create_f1_f0(Abc_Obj_t* current_node, vector<Abc_Obj_t*> f1_po, vector<Abc_Obj_t*> f0_po)
 {
-	if (current_node==target)
+	//if (current_node==target)
 	/*	
  	*	create const1,const0
  	*	for each fanout, link to const1, create new node link to const0
  	*	recursive_create_f1_f0 fanout
  	*/
-	else
+	//else
 	/*
  	* 	
  	*/
