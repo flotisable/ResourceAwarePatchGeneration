@@ -1,5 +1,10 @@
 #include "InterpolationEngine.h"
 
+extern "C"
+{
+#include "sat/bsat/satStore.h"
+}
+
 InterpolationEngine::InterpolationEngine()
 {
   dln             = NULL;
@@ -66,5 +71,32 @@ void InterpolationEngine::addClauseB()
 
 void InterpolationEngine::interpolation()
 {
+  if( !satSolver ) return; // precondition
+
+  lit         unitAssumption[3];
+  Sto_Man_t   *proof;
+  Inta_Man_t  *interMan;
+  Vec_Int_t   *commonVariables;
+
+  unitAssumption[0] = toLitCond( converter.literalsOn ()[0], 0 );
+  unitAssumption[1] = toLitCond( converter.literalsOff()[0], 0 );
+
+  if( sat_solver_solve( satSolver, unitAssumption, unitAssumption + 2, 0, 0, 0, 0  ) != l_False ) return;
+
+  proof           = static_cast<Sto_Man_t*>( sat_solver_store_release( satSolver ) );
+  commonVariables = Vec_IntAlloc( converter.literalsOn().size() - 1 );
+
+  sat_solver_delete( satSolver );
+
+  for( int i = 1 ; i < converter.literalsOn().size() ; ++i )
+     Vec_IntPush( commonVariables, converter.literalsOn()[i] );
+
+  satSolver     = NULL;
+  interMan      = Inta_ManAlloc();
+  mInterpolant  = static_cast<Aig_Man_t*>( Inta_ManInterpolate( interMan, proof, 0, commonVariables, 0 ) );
+
+  Inta_ManFree( interMan        );
+  Vec_IntFree ( commonVariables );
+  Sto_ManFree ( proof           );
 }
 
