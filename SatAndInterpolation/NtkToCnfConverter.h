@@ -31,7 +31,7 @@ class NtkToCnfConverter
     NtkToCnfConverter();
     ~NtkToCnfConverter();
 
-    inline void setBaseFuncions   ( const vector<Abc_Obj_t*>  baseFunctions   );
+    inline void setBaseFunctions  ( const vector<Abc_Obj_t*>  baseFunctions   );
     inline void setTargetFunction ( Abc_Obj_t                 *targetFunction );
     inline void setCircuit        ( Abc_Ntk_t                 *circuit        );
 
@@ -73,7 +73,7 @@ int findLiteral( Aig_Man_t *aig, Cnf_Dat_t *cnf, Abc_Obj_t *target );
 // end non-member functions
 
 // public inline member functions
-inline void NtkToCnfConverter::setBaseFuncions   ( const vector<Abc_Obj_t*> baseFunctions   )
+inline void NtkToCnfConverter::setBaseFunctions  ( const vector<Abc_Obj_t*> baseFunctions   )
 { this->baseFunctions   = baseFunctions; }
 inline void NtkToCnfConverter::setTargetFunction ( Abc_Obj_t                *targetFunction )
 { this->targetFunction  = targetFunction; }
