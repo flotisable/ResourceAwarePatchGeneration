@@ -5,4 +5,5 @@ rpgen
 tags
 Session.vim
 *.v
-Test/TestNtkToCnfConverter/test
+Test/NtkToCnfConverter/test
+Test/InterpolationEngine/test

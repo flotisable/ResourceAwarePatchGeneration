@@ -99,4 +99,3 @@ void InterpolationEngine::interpolation()
   Vec_IntFree ( commonVariables );
   Sto_ManFree ( proof           );
 }
-

@@ -5,8 +5,8 @@ abcLib    := libabc.a
 abcFlags  := $(shell ./getAbcFlags.sh $(abcDir))
 
 projectDir			:= $(PWD)
-satAndInterDir 	:= SatAndInterpolation
-testDir					:= Test
+satAndInterDir 	:= $(projectDir)/SatAndInterpolation
+testDir					:= $(projectDir)/Test
 
 PROG      := rpgen
 CXX       := g++ 
@@ -53,9 +53,11 @@ debug: CXXFLAGS += -g -O
 debug: all
 
 testNtkToCnfConverter:
-	$(MAKE) -e -C $(testDir)/TestNtkToCnfConverter
+	$(MAKE) -e -C $(testDir)/NtkToCnfConverter
+
+testInterpolationEngine:
+	$(MAKE) -e -C $(testDir)/InterpolationEngine
 
 clean:
 	rm *.o $(PROG)
 	$(MAKE) -C $(satAndInterDir) clean
-	$(MAKE) -C $(testDir)/TestNtkToCnfConverter clean
