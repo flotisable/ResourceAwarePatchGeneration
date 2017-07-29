@@ -44,11 +44,7 @@ void ResourceAwarePatchGenerator::read_weight()
 		map< string, int >::iterator iter;
 		
 		if( ( iter = name_to_weight.find( string(name) ) ) != name_to_weight.end() ){    //this net weight is not defined
-		{
-			Weight_gate* temp = new Weight_gate;
-			temp->gate   = pObj;
-			temp->weight = iter->second;
-			temp->name=string(name);
+			Weight_gate* temp = new Weight_gate( pObj, string(name), iter->second );
 			
 			name_to_weight.erase( iter );
 			gate_list.push_back( temp );
@@ -59,6 +55,13 @@ void ResourceAwarePatchGenerator::read_weight()
 			  cout<<"    gate weight:"<<temp->weight<<endl;
 			#endif
 		}
+
+		if( Abc_NodeIsConst( pObj )==1 && name[0] == 't' )
+			t_list.push_back( pObj );
 	}
+
+	t_Pi_list.resize( t_list.size() );
+	t_Po_list.resize( t_list.size() );
+
 	//cout<<"gate_list.size()=="<<gate_list.size()<<endl;
 }

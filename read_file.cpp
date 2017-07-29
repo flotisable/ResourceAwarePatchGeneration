@@ -1,4 +1,5 @@
 #include "ResourceAwarePatchGeneration.h"
+#include <map>
 
 using namespace std;
 
@@ -44,7 +45,7 @@ void ResourceAwarePatchGenerator::read_file()
 	Abc_NtkForEachPo( initial_F, pObj, i )
 		if( ( iter = name_to_Po.find( Abc_ObjName(pObj) ) ) != name_to_Po.end() ){ //find
 			Abc_ObjSetCopy( iter->second, pObj );
-			Abc_ObjSetCopy( iter->second, pObj );
+			Abc_ObjSetCopy( pObj, iter->second );
 			name_to_Po.erase( iter );
 		}
 		#ifdef DEBUG_READ_FILE

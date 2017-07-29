@@ -13,7 +13,18 @@ LDFLAGS   := -lreadline -lpthread -ldl -lm
  
 all: $(PROG)
 
-$(PROG): pre_process.o read_file.o delete_unused_PO.o trav_Po_add_to_set.o read_weight.o main.o ResourceAwarePatchGeneration.o write_patch.o interpolation.o $(abcLibDir)/$(abcLib) 
+$(PROG): pre_process.o \
+	     trav_Pi_add_to_set.o \
+	     replace_t_with_PI.o \
+	     read_file.o \
+	     delete_unused_PO.o \
+	     trav_Po_add_to_set.o \
+	     read_weight.o main.o \
+	     ResourceAwarePatchGeneration.o \
+	     write_patch.o \
+	     interpolation.o \
+	     traverse_t_PI_and_PO.o \
+	     $(abcLibDir)/$(abcLib) 
 	$(LD) $(LDFLAGS) -o $@ $^
 
 main.o: main.cpp
@@ -32,6 +43,15 @@ delete_unused_PO.o: delete_unused_PO.cpp ResourceAwarePatchGeneration.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 trav_Po_add_to_set.o: trav_Po_add_to_set.cpp ResourceAwarePatchGeneration.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+
+trav_Pi_add_to_set.o: trav_Pi_add_to_set.cpp ResourceAwarePatchGeneration.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+
+traverse_t_PI_and_PO.o: traverse_t_PI_and_PO.cpp ResourceAwarePatchGeneration.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+
+replace_t_with_PI.o: replace_t_with_PI.cpp ResourceAwarePatchGeneration.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $< 
 	
 read_weight.o: read_weight.cpp ResourceAwarePatchGeneration.h

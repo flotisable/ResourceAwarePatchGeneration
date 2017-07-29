@@ -12,8 +12,6 @@ int main( int argc, char *argv[] )
     cerr << "rpgen <F.v> <G.v> <weight.txt> <patch.v> <out.v>";
     return 1;
   }
-
-  ResourceAwarePatchGenerator solver( argv[1], argv[2], argv[3], argv[4], argv[5] );
   string FFileName        = argv[1];  
   string GFileName        = argv[2];  
   string weightFileName   = argv[3];  
@@ -22,20 +20,19 @@ int main( int argc, char *argv[] )
 
   ResourceAwarePatchGenerator solver( FFileName, GFileName, weightFileName);
   
-  solver.read_file();
-  
-  solver.pre_process();
-  
-  solver.read_weight();
-  solver.replace_t_with_PI();
+  solver.read_file();//read F,G
+  solver.read_weight();//construct gate_list
+  solver.replace_t_with_PI();//replace t to Pi, t_list,
+  solver.traverse_t_PI_and_PO();//replace t to Pi, t_list,
+
   //solver.convert_ntk_to_aig_with_base_func();
-  solver.DP_reduce_base_function();
-  solver.delete_unused_PO();
-  solver.convert_ntk_to_aig_with_base_func();
+  //solver.DP_reduce_base_function();
+  solver.delete_unused_PO();//t fanout cone po, t fanout and fanin cone pi
+  //solver.convert_ntk_to_aig_with_base_func();
   //solver.pre_process();
   
-  solver.construct_DLN();
-  solver.functional_dependency();
+  //solver.construct_DLN();
+  //solver.functional_dependency();
   //solver.write_patch( patchFileName, patchedFileName );
   
   return 0;

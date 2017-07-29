@@ -1,5 +1,6 @@
 #include "ResourceAwarePatchGeneration.h"
 
+#include <map>
 //#define SHOW
 
 using namespace std;
@@ -8,50 +9,43 @@ void ResourceAwarePatchGenerator::delete_unused_PO()
 {
     cout<<"[INFO] delete unused PO ..."<<endl;
     
-    set<Abc_Obj_t*> depend_to_target_Po;
+    
 
     int i;
-    Abc_Obj_t *pNode, *pPo;  
+    Abc_Obj_t *pNode, *pPo, *pPi;  
     char *name;
-    ///////////////////////////////////////////////////////////////
-	//                     remove Po on F                        //
-    ///////////////////////////////////////////////////////////////	
-    Abc_NtkForEachNode( initial_F, pNode, i ){
-        if(Abc_NodeIsConst(pNode) == 1){
-            name = Abc_ObjName( pNode );
-            if( name[0] == 't' ){
-                trav_Po_add_to_set( pNode, depend_to_target_Po );
-            }
-        }	
-    }
-	
-	///////////////////////////////////////////////////////////////
-	//                 remove the same Po on G                   //
-    ///////////////////////////////////////////////////////////////
-    //memorize all Po in G
-	map< string, Abc_Obj_t* > g_Po_name_to_gate;
-	Abc_NtkForEachPo( initial_G, pPo, i ){
-		name = Abc_ObjName( pPo );
-		g_Po_name_to_gate[ string(name) ] = pPo;
-	}
+    
 
-
-    //delete unuse Po
+    //delete unuse Po on F and G
     Abc_NtkForEachPo( initial_F, pPo, i ){
         set<Abc_Obj_t*>::iterator it = depend_to_target_Po.find( pPo );
-        if( it == depend_to_target_Po.end() ){
-            name = Abc_ObjName(pPo);
-            Abc_NtkDeleteObj( g_Po_name_to_gate[ string(name) ] );//G
+        if( it == depend_to_target_Po.end() ){ //it isn't t fanout Po
+            //cout<<"Abc_ObjCopy: "<<Abc_ObjCopy(pPo)<<endl;
+            Abc_NtkDeleteObj( Abc_ObjCopy( pPo ) ); //G
 			Abc_NtkDeleteObj( pPo );//F
 
             //cout<<"this Po is not in t_i fanout cone"<<endl;
 		}
-        else{
-            depend_to_target_Po.erase( it );//F
-
+        else{  //it is t fanout Po
+            ///////////********************
+            depend_to_target_Po.erase( it ); //F
+            ///////////********************
 			//cout<<"this Po is in t_i fanout cone"<<endl;
 		}
     }
+
+    //delete unuse Po on G
+    Abc_NtkForEachPi( initial_G, pPi, i ){
+        set<Abc_Obj_t*>::iterator it = depend_to_target_Pi.find( pPo );
+        if( it == depend_to_target_Pi.end() ){ //it isn't t fanout Po
+            Abc_NtkDeleteObj( pPi ); //G
+        }
+        else{  //it is t fanout Po
+            depend_to_target_Pi.erase( it ); //G
+        }
+    }
+
+
 	cout<<"G before strash "<< Abc_NtkObjNum(initial_G)<<endl;
 
     Abc_Ntk_t* temp_Ntk;
@@ -74,4 +68,5 @@ void ResourceAwarePatchGenerator::delete_unused_PO()
 
 	cout<<"Abc_NtkObjNum "<< Abc_NtkObjNum(initial_F)<<endl;
 	cout<<"Abc_NtkObjNum G "<< Abc_NtkObjNum(initial_G)<<endl;
+    
 }

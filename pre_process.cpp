@@ -1,13 +1,8 @@
 #include "ResourceAwarePatchGeneration.h"
 #include <fstream>
-<<<<<<< HEAD
- 
- 
-=======
 #include <map>
 
 
->>>>>>> 2c9ba856bc41976b3fda8534b6ae66ebb46b9f4f
 using namespace std;
 extern "C"
 {
@@ -53,7 +48,7 @@ void ResourceAwarePatchGenerator::DP_reduce_base_function ()
 	cout << "[INFO] DP reduce base function started" << endl;
 	vector<Weight_gate*> new_weight_gate;
 
-	/*Abc_Obj_t* iter_obj;
+	Abc_Obj_t* iter_obj;
 	int i;
 	map<Abc_Obj_t*,int> DP_cost;
 	Abc_NtkForEachPi(initial_F, iter_obj,i)			//add pi into cost array, assume all pi is in base function	
@@ -143,14 +138,10 @@ void ResourceAwarePatchGenerator::convert_ntk_to_aig_with_base_func ()
 		Abc_NtkDeleteObj(temp_po);
 		
 	}
-<<<<<<< HEAD
-	*/
-=======
 	cout << Abc_NtkPoNum(strashed_F) << endl;
 	initial_F=strashed_F;
 	//t_list
 	//t_Pi_list
 	//t_Po_list
 
->>>>>>> 2c9ba856bc41976b3fda8534b6ae66ebb46b9f4f
 }
