@@ -80,15 +80,11 @@ void InterpolationEngine::interpolation()
   if( !satSolver ) return; // precondition
   std::cout << "interpolation\n";
 
-  lit         unitAssumption[3];
   Sto_Man_t   *proof;
   Inta_Man_t  *interMan;
   Vec_Int_t   *commonVariables;
 
-  unitAssumption[0] = toLitCond( converter.literalsOn ()[0], 0 );
-  unitAssumption[1] = toLitCond( converter.literalsOff()[0], 0 );
-
-  if( sat_solver_solve( satSolver, unitAssumption, unitAssumption + 2, 0, 0, 0, 0  ) != l_False ) 
+  if( sat_solver_solve( satSolver, NULL, NULL, 0, 0, 0, 0  ) != l_False ) 
   {
     std::cout << "sat\n";
     return;
@@ -107,7 +103,9 @@ void InterpolationEngine::interpolation()
   interMan      = Inta_ManAlloc();
   mInterpolant  = static_cast<Aig_Man_t*>( Inta_ManInterpolate( interMan, proof, 0, commonVariables, 0 ) );
 
+  // release memory
   Inta_ManFree( interMan        );
   Vec_IntFree ( commonVariables );
   Sto_ManFree ( proof           );
+  // end release memory
 }

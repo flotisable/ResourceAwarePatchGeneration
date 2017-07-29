@@ -17,6 +17,8 @@ extern "C"
 
 class InterpolationEngine
 {
+  friend class TestInterpolationEngine;
+
   public:
 
     InterpolationEngine();
