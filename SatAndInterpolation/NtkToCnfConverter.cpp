@@ -104,8 +104,11 @@ void NtkToCnfConverter::createOnOffCircuit()
       Abc_Obj_t *outInv;
 
       targetCopy  = Abc_NtkPo( ntkOff, i );
-      outInv      = Abc_ObjNot( Abc_ObjFanin0( targetCopy ) );
+      outInv      = Abc_ObjNot( Abc_ObjChild0( targetCopy ) );
+      std::cout << Abc_ObjIsComplement( outInv ) << " "
+                << Abc_ObjIsComplement( Abc_ObjChild0( targetCopy ) ) << "\n";
 
+      Abc_ObjXorFaninC  ( targetCopy, 0 );
       Abc_ObjDeleteFanin( targetCopy, Abc_ObjFanin0( targetCopy ) );
       Abc_ObjAddFanin   ( targetCopy, outInv                      );
       break;
