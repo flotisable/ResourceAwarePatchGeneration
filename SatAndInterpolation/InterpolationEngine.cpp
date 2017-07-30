@@ -31,6 +31,8 @@ void InterpolationEngine::addClauseA()
   if( !converter.cnfOn() ) return; // precondition
   std::cout << "add clause A\n";
 
+  int lits[2];
+
   // setup sat solver
   satSolver = sat_solver_new();
 
@@ -39,7 +41,10 @@ void InterpolationEngine::addClauseA()
   // end setup sat solver
 
   // add clause A
+  lits[0] = toLitCond( converter.literalsOn()[0], 0 );
+
   addClause( satSolver, converter.cnfOn() );
+  sat_solver_addclause( satSolver, lits, lits + 1 );
   sat_solver_store_mark_clauses_a( satSolver );
   // end add clause A
 }
@@ -52,7 +57,10 @@ void InterpolationEngine::addClauseB()
   int lits[3];
 
   // add clause B
+  lits[0] = toLitCond( converter.literalsOff()[0], 0 );
+
   addClause( satSolver, converter.cnfOff() );
+  sat_solver_addclause( satSolver, lits, lits + 1 );
   // end add clause B
 
   // add common variables clause

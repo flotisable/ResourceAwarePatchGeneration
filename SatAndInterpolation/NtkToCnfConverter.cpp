@@ -16,52 +16,9 @@ int findLiteral( Aig_Man_t *aig, Cnf_Dat_t *cnf, Abc_Obj_t *target )
 
   Aig_ManForEachCo( aig, co, i )
     if( Aig_ObjFanin0( co ) == reinterpret_cast<Aig_Obj_t*>( Abc_ObjCopy( Abc_ObjFanin0( target )  ) ) )
-      return cnf->pVarNums[Aig_ObjFanin0( co )->Id];
+      return cnf->pVarNums[co->Id];
 
   return -1;
-}
-
-void removePo( Aig_Man_t *aig, Aig_Obj_t *po )
-{
-  Vec_PtrRemove     ( aig->vCos, po );
-  Aig_ObjDisconnect ( aig, po );
-  aig->nObjs[AIG_OBJ_CO]--;
-}
-
-void insertPo( Aig_Man_t *aig, Aig_Obj_t *po, Aig_Obj_t *poFanin )
-{
-  Vec_PtrPush   ( aig->vCos, po );
-  Aig_ObjConnect( aig, po, poFanin, NULL );
-  aig->nObjs[AIG_OBJ_CO]++;
-}
-
-Cnf_Dat_t* deriveCnf( Aig_Man_t *aig, Aig_Obj_t *output )
-{
-  vector<Aig_Obj_t*> pos;
-  vector<Aig_Obj_t*> poFanins;
-
-  Cnf_Dat_t *cnf;
-  Aig_Obj_t *po;
-  int       i;
-
-  std::cout << Aig_ManCoNum( aig ) << "\n";
-  Aig_ManForEachCo( aig, po, i )
-  {
-    if( po == output ) continue;
-
-    pos.push_back( po );
-    poFanins.push_back( Aig_ObjFanin0( po ) );
-  }
-  for( int i = 0 ; i < pos.size() ; ++i )
-     removePo( aig, pos[i] );
-  std::cout << Aig_ManCoNum( aig ) << "\n";
-
-  cnf = Cnf_DeriveSimple( aig, 0 );
-
-  for( int i = 0 ; i < pos.size() ; ++i )
-     insertPo( aig, pos[i], poFanins[i] );
-
-  return cnf;
 }
 
 NtkToCnfConverter::NtkToCnfConverter()
@@ -141,18 +98,8 @@ void NtkToCnfConverter::circuitToCnf()
   aigOn  = Abc_NtkToDar( ntkOn,  0, 0 );
   aigOff = Abc_NtkToDar( ntkOff, 0, 0 );
 
-  Aig_ManForEachCo( aigOn, fanout, i )
-    if( Aig_ObjFanin0( fanout ) == reinterpret_cast<Aig_Obj_t*>( Abc_ObjCopy( Abc_ObjFanin0( targetFunction ) ) ) )
-    {
-      mCnfOn = deriveCnf( aigOn, fanout );
-      break;
-    }
-  Aig_ManForEachCo( aigOff, fanout, i )
-    if( Aig_ObjFanin0( fanout ) == reinterpret_cast<Aig_Obj_t*>( Abc_ObjCopy( Abc_ObjFanin0( targetCopy ) ) ) )
-    {
-      mCnfOff = deriveCnf( aigOff, fanout );
-      break;
-    }
+  mCnfOn  = Cnf_DeriveSimple( aigOn,  Aig_ManCoNum( aigOn   ) );
+  mCnfOff = Cnf_DeriveSimple( aigOff, Aig_ManCoNum( aigOff  ) );
 
   Cnf_DataLift( mCnfOff, mCnfOn->nVars );
   // end conver to cnf
