@@ -46,7 +46,7 @@ class ResourceAwarePatchGenerator
       void construct_DLN () {}          //transform initial circuit to DLN circuit 
       void transform_to_CNF () {}       //transform DLN circuit to CNF
       void sat_solve () {}          //solve CNF by sat
-      void interpolation ();       //construct t's circuit
+      void interpolation ( Abc_Ntk_t *dln, Abc_Obj_t *targetPo, const vector<Abc_Obj_t*> &baseFunctions );       //construct t's circuit
       
       void functional_dependency() {}   //inculde above three step 
       void write_patch( const string patchedFileName, const string patchFileName );          //write the result to file as the competition format
@@ -82,5 +82,5 @@ class ResourceAwarePatchGenerator
       set<Abc_Obj_t*> depend_to_target_Po, depend_to_target_Pi;
       //??? CNF_formula; 
       //??? sat_result;
-      //??? interpolation_result;
+      Abc_Ntk_t *interpolant;
 };
