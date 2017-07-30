@@ -27,7 +27,7 @@ class InterpolationEngine
     inline void setBaseFunctions  ( const vector<Abc_Obj_t*>  &baseFunctions  );
     inline void setTargetFunction ( Abc_Obj_t                 *targetFunction );
 
-    inline Aig_Man_t* interpolant();
+    inline Abc_Ntk_t* interpolant();
 
     void circuitToCnf();
     void addClauseA();
@@ -36,12 +36,14 @@ class InterpolationEngine
 
   private:
 
+    Abc_Ntk_t* convertAigToNtk( Aig_Man_t *aig );
+
     Abc_Ntk_t           *dln;          // dependency logic network
     vector<Abc_Obj_t*>  baseFunctions;
     Abc_Obj_t           *targetFunction;
     NtkToCnfConverter   converter;
 
-    Aig_Man_t *mInterpolant;
+    Abc_Ntk_t *mInterpolant;
 
     sat_solver *satSolver;
 };
@@ -56,7 +58,7 @@ inline void InterpolationEngine::setBaseFunctions ( const vector<Abc_Obj_t*> &ba
 inline void InterpolationEngine::setTargetFunction( Abc_Obj_t *targetFunction )
 { this->targetFunction = targetFunction; }
 
-inline Aig_Man_t* InterpolationEngine::interpolant() { return mInterpolant; }
+inline Abc_Ntk_t* InterpolationEngine::interpolant() { return mInterpolant; }
 // end public inline member functions
 
 inline void addClause( sat_solver *satSolver, Cnf_Dat_t *cnf )
