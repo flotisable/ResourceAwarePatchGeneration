@@ -48,13 +48,15 @@ void TestInterpolationEngine::test()
   engine.setBaseFunctions ( baseFunctions   );
 
   engine.circuitToCnf (); cout << "convert to cnf\n";
+  Cnf_DataWriteIntoFile( engine.converter.cnfOn(), const_cast<char*>( "cnfOn.txt" ), 1, NULL, NULL );
+  Cnf_DataWriteIntoFile( engine.converter.cnfOff(), const_cast<char*>( "cnfOff.txt" ), 1, NULL, NULL );
   engine.addClauseA   (); cout << "add clause A\n";
+  sat_solver_store_write( engine.satSolver, const_cast<char*>( "satCnfA.txt" ) );
   engine.addClauseB   (); cout << "add clause B\n";
+  sat_solver_store_write( engine.satSolver, const_cast<char*>( "satCnf.txt" ) );
   engine.interpolation(); cout << "interpolation\n";
 
   Aig_ManDumpVerilog( engine.interpolant(), const_cast<char*>( outFile.c_str() ) );
-  Cnf_DataWriteIntoFile( engine.converter.cnfOn(), const_cast<char*>( "cnfOn.txt" ), 1, NULL, NULL );
-  Cnf_DataWriteIntoFile( engine.converter.cnfOff(), const_cast<char*>( "cnfOff.txt" ), 1, NULL, NULL );
   //interpolant = Abc_NtkFromDar( dln, engine.interpolant() );
 
   //write( outFile );

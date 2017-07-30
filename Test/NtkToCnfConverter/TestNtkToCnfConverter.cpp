@@ -123,4 +123,7 @@ void TestNtkToCnfConverter::testCircuitToCnf()
 
   for( int i = 0 ; i < converter.literalsOff().size() ; ++i )
      file << converter.literalsOff()[i] << "\n";
+
+  Cnf_DataWriteIntoFile( converter.cnfOn  (), const_cast<char*>( "cnfOn.txt"  ), 1, NULL, NULL );
+  Cnf_DataWriteIntoFile( converter.cnfOff (), const_cast<char*>( "cnfOff.txt" ), 1, NULL, NULL );
 }

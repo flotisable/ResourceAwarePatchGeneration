@@ -56,18 +56,18 @@ void InterpolationEngine::addClauseB()
   // end add clause B
 
   // add common variables clause
-  for( int i = 1 ; i < baseFunctions.size() ; ++i )
+  for( int i = 0 ; i < baseFunctions.size() ; ++i )
   {
-     lits[0] = toLitCond( converter.literalsOn ()[i], 0 );
-     lits[1] = toLitCond( converter.literalsOff()[i], 1 );
+     lits[0] = toLitCond( converter.literalsOn ()[i+1], 0 );
+     lits[1] = toLitCond( converter.literalsOff()[i+1], 1 );
 
      if( !sat_solver_addclause( satSolver, lits, lits + 2 ) )
        std::cout << "clause add error!\n";
 
-     lits[0] = toLitCond( converter.literalsOn ()[i], 1 );
-     lits[1] = toLitCond( converter.literalsOff()[i], 0 );
+     lits[0] = toLitCond( converter.literalsOn ()[i+1], 1 );
+     lits[1] = toLitCond( converter.literalsOff()[i+1], 0 );
 
-     if ( !sat_solver_addclause( satSolver, lits, lits + 2 ) )
+     if( !sat_solver_addclause( satSolver, lits, lits + 2 ) )
        std::cout << "clause add error!\n";
   }
   // end add common variables clause

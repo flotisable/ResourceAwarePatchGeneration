@@ -69,7 +69,10 @@ class NtkToCnfConverter
 };
 
 // non-member functions
-int findLiteral( Aig_Man_t *aig, Cnf_Dat_t *cnf, Abc_Obj_t *target );
+int         findLiteral ( Aig_Man_t *aig, Cnf_Dat_t *cnf, Abc_Obj_t *target );
+void        removePo    ( Aig_Man_t *aig, Aig_Obj_t *po );
+void        insertPo    ( Aig_Man_t *aig, Aig_Obj_t *po, Aig_Obj_t *poFanin );
+Cnf_Dat_t*  deriveCnf   ( Aig_Man_t *aig, Aig_Obj_t *output );
 // end non-member functions
 
 // public inline member functions
