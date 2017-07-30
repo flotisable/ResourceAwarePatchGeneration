@@ -1,7 +1,7 @@
 #include "ResourceAwarePatchGeneration.h"
 
 #include <map>
-//#define SHOW
+#define SHOW
 
 using namespace std;
 
@@ -15,28 +15,36 @@ void ResourceAwarePatchGenerator::delete_unused_PO()
 
     //delete unuse Po on F and G
     Abc_NtkForEachPo( initial_F, pPo, i ){
+		cout<<"18"<<endl;
         set<Abc_Obj_t*>::iterator it = depend_to_target_Po.find( pPo );
         if( it == depend_to_target_Po.end() ){ //it isn't t fanout Po
             //cout<<"Abc_ObjCopy: "<<Abc_ObjCopy(pPo)<<endl;
             Abc_NtkDeleteObj( Abc_ObjCopy( pPo ) ); //G
 			Abc_NtkDeleteObj( pPo );//F
 
-            //cout<<"this Po is not in t_i fanout cone"<<endl;
+            //cout<<"  "<<Abc_ObjName(pPo)<<"Po is not in t_i fanout cone"<<endl;
 		}
         else{  //it is t fanout Po
             ///////////********************
             depend_to_target_Po.erase( it ); //F
             ///////////********************
-			//cout<<"this Po is in t_i fanout cone"<<endl;
+			//cout<<"  "<<Abc_ObjName(pPo)<<"Po is in t_i fanout cone"<<endl;
 		}
     }
+	cout<<"34"<<endl;
+	
     //delete unuse Pi on G
     Abc_NtkForEachPi( initial_G, pPi, i ){
+		cout<<"Pi="<<pPi<<endl;
         set<Abc_Obj_t*>::iterator it = depend_to_target_Pi.find( pPi );
+		cout<<"it="<<it<<endl;
         if( it == depend_to_target_Pi.end() ){ //it isn't t fanout Po
+            cout<<"not find depend_to_target_Pi: "<<Abc_ObjName(*it)<<endl;
+
             Abc_NtkDeleteObj( pPi ); //G
         }
         else{  //it is t fanout Po
+            cout<<"find depend_to_target_Pi: "<<Abc_ObjName(*it)<<endl;
             depend_to_target_Pi.erase( it ); //G
         }
     }

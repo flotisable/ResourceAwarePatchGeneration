@@ -12,6 +12,7 @@ void ResourceAwarePatchGenerator::traverse_t_PI_and_PO()
 	///////////////////////////////////////////////////////////////
 	//              traverse all t fanout Po on F                //
     ///////////////////////////////////////////////////////////////	
+    
     Abc_NtkIncrementTravId( initial_F );
     for( i = 0; i < t_list.size(); ++i){
         set<Abc_Obj_t*>& cur_t_Po_list = t_Po_list[i];						//cout<<"17"<<t_list[i]<<endl;
@@ -26,8 +27,6 @@ void ResourceAwarePatchGenerator::traverse_t_PI_and_PO()
 
     Abc_NtkForEachPo( initial_G, pPo, i ){
     	recursive_trav_Pi_add_to_set( pPo, current_Po_fanin_Pi_set );
-
-        depend_to_target_Pi.insert( current_Po_fanin_Pi_set.begin(), current_Po_fanin_Pi_set.end() );                 //cout<<"19"<<endl;
 
     	Po_fanin_Pi[ pPo ] = current_Po_fanin_Pi_set;
         //cout<<"current_Po_fanin_Pi_set.size(): "<<current_Po_fanin_Pi_set.size()<<endl;
@@ -45,6 +44,8 @@ void ResourceAwarePatchGenerator::traverse_t_PI_and_PO()
     	set<Abc_Obj_t*>::iterator set_iter;
     	for( set_iter = cur_t_Po_list.begin(); set_iter != cur_t_Po_list.end(); ++set_iter){
     		t_Pi_list[i].insert( ( Po_fanin_Pi[ *set_iter ] ).begin(), ( Po_fanin_Pi[ *set_iter ] ).end() );
+			depend_to_target_Pi.insert( ( Po_fanin_Pi[ *set_iter ] ).begin(), ( Po_fanin_Pi[ *set_iter ] ).end() );                 //cout<<"19"<<endl;
+
     	}
     }
 //cout<<"43"<<endl;
