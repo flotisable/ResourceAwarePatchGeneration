@@ -9,3 +9,4 @@ Session.vim
 *.v
 Test/NtkToCnfConverter/test
 Test/InterpolationEngine/test
+*.txt

@@ -105,12 +105,12 @@ void TestNtkToCnfConverter::testCircuitToCnf()
   file.open( aigLog.c_str() );
 
   Aig_ManForEachCo( converter.aigOn, co, i )
-    file << converter.cnfOn()->pVarNums[Aig_ObjFanin0( co )->Id] << "\n";
+    file << converter.cnfOn()->pVarNums[co->Id] << "\n";
 
   file << "\n";
 
   Aig_ManForEachCo( converter.aigOff, co, i )
-    file << converter.cnfOff()->pVarNums[Aig_ObjFanin0( co )->Id] << "\n";
+    file << converter.cnfOff()->pVarNums[co->Id] << "\n";
 
   file.close();
 
@@ -123,4 +123,7 @@ void TestNtkToCnfConverter::testCircuitToCnf()
 
   for( int i = 0 ; i < converter.literalsOff().size() ; ++i )
      file << converter.literalsOff()[i] << "\n";
+
+  Cnf_DataWriteIntoFile( converter.cnfOn  (), const_cast<char*>( "cnfOn.txt"  ), 1, NULL, NULL );
+  Cnf_DataWriteIntoFile( converter.cnfOff (), const_cast<char*>( "cnfOff.txt" ), 1, NULL, NULL );
 }

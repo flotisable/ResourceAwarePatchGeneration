@@ -1,7 +1,11 @@
 #include "NtkToCnfConverter.h"
 
+#include <iostream>
+
 extern "C"
 {
+#include "misc/vec/vecPtr.h"
+
   Aig_Man_t* Abc_NtkToDar( Abc_Ntk_t*, int, int );
 }
 
@@ -12,7 +16,7 @@ int findLiteral( Aig_Man_t *aig, Cnf_Dat_t *cnf, Abc_Obj_t *target )
 
   Aig_ManForEachCo( aig, co, i )
     if( Aig_ObjFanin0( co ) == reinterpret_cast<Aig_Obj_t*>( Abc_ObjCopy( Abc_ObjFanin0( target )  ) ) )
-      return cnf->pVarNums[Aig_ObjFanin0( co )->Id];
+      return cnf->pVarNums[co->Id];
 
   return -1;
 }
@@ -57,8 +61,11 @@ void NtkToCnfConverter::createOnOffCircuit()
       Abc_Obj_t *outInv;
 
       targetCopy  = Abc_NtkPo( ntkOff, i );
-      outInv      = Abc_ObjNot( Abc_ObjFanin0( targetCopy ) );
+      outInv      = Abc_ObjNot( Abc_ObjChild0( targetCopy ) );
+      std::cout << Abc_ObjIsComplement( outInv ) << " "
+                << Abc_ObjIsComplement( Abc_ObjChild0( targetCopy ) ) << "\n";
 
+      Abc_ObjXorFaninC  ( targetCopy, 0 );
       Abc_ObjDeleteFanin( targetCopy, Abc_ObjFanin0( targetCopy ) );
       Abc_ObjAddFanin   ( targetCopy, outInv                      );
       break;
@@ -84,15 +91,15 @@ void NtkToCnfConverter::circuitToCnf()
 {
   if( !ntkOn || !ntkOff ) return; // precondition
 
-  Aig_Obj_t *co;
+  Aig_Obj_t *fanout;
   int       i;
 
   // conver to cnf
   aigOn  = Abc_NtkToDar( ntkOn,  0, 0 );
   aigOff = Abc_NtkToDar( ntkOff, 0, 0 );
 
-  mCnfOn  = Cnf_DeriveSimple( aigOn,  0 );
-  mCnfOff = Cnf_DeriveSimple( aigOff, 0 );
+  mCnfOn  = Cnf_DeriveSimple( aigOn,  Aig_ManCoNum( aigOn   ) );
+  mCnfOff = Cnf_DeriveSimple( aigOff, Aig_ManCoNum( aigOff  ) );
 
   Cnf_DataLift( mCnfOff, mCnfOn->nVars );
   // end conver to cnf

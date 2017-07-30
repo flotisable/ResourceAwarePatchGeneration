@@ -48,13 +48,18 @@ void TestInterpolationEngine::test()
   engine.setBaseFunctions ( baseFunctions   );
 
   engine.circuitToCnf (); cout << "convert to cnf\n";
+  Cnf_DataWriteIntoFile( engine.converter.cnfOn(), const_cast<char*>( "cnfOn.txt" ), 1, NULL, NULL );
+  Cnf_DataWriteIntoFile( engine.converter.cnfOff(), const_cast<char*>( "cnfOff.txt" ), 1, NULL, NULL );
   engine.addClauseA   (); cout << "add clause A\n";
+  sat_solver_store_write( engine.satSolver, const_cast<char*>( "satCnfA.txt" ) );
   engine.addClauseB   (); cout << "add clause B\n";
+  sat_solver_store_write( engine.satSolver, const_cast<char*>( "satCnf.txt" ) );
   engine.interpolation(); cout << "interpolation\n";
 
-  interpolant = Abc_NtkFromDar( dln, engine.interpolant() );
+  Aig_ManDumpVerilog( engine.interpolant(), const_cast<char*>( outFile.c_str() ) );
+  //interpolant = Abc_NtkFromDar( dln, engine.interpolant() );
 
-  write( outFile );
+  //write( outFile );
 }
 
 void TestInterpolationEngine::read( const std::string &file )
@@ -80,8 +85,10 @@ void TestInterpolationEngine::read( const std::string &file )
 
 void TestInterpolationEngine::write( const std::string &file )
 {
+  /*
   interpolant = Abc_NtkToNetlist( interpolant );
 
   Abc_NtkToAig( interpolant );
   Io_WriteVerilog( interpolant, const_cast<char*>( file.c_str() ) );
+  */
 }

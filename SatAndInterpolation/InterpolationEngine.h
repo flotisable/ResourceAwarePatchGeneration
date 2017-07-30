@@ -17,6 +17,8 @@ extern "C"
 
 class InterpolationEngine
 {
+  friend class TestInterpolationEngine;
+
   public:
 
     InterpolationEngine();
@@ -62,7 +64,9 @@ inline void addClause( sat_solver *satSolver, Cnf_Dat_t *cnf )
   int *begin, *end, i;
 
   Cnf_CnfForClause( cnf, begin, end, i )
+  {
     if( !sat_solver_addclause( satSolver, begin, end ) )
       std::cout << "clause add error!\n";
+  }
 }
 #endif
