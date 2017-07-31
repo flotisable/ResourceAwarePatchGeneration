@@ -26,7 +26,7 @@ int main( int argc, char *argv[] )
   solver.traverse_t_PI_and_PO();//replace t to Pi, t_list,
 
   solver.DP_reduce_base_function();
-  solver.delete_unused_PO();//t fanout cone po, t fanout and fanin cone pi
+  //solver.delete_unused_PO();//t fanout cone po, t fanout and fanin cone pi
   solver.convert_ntk_to_aig_with_base_func(false);
   solver.construct_t(true);
 
