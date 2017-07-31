@@ -112,9 +112,7 @@ void TestResourceAwarePatchGeneration::testInterpolation()
   generator.interpolation( circuit, targetFunction, baseFunctions );
 
   circuit = generator.interpolant;
-  circuit = Abc_NtkToNetlist( circuit );
-
-  Abc_NtkToAig( circuit );
+  //circuit = Abc_NtkToNetlist( circuit );
 
   Io_WriteVerilog( circuit, const_cast<char*>( outFile.c_str() ) );
 }
