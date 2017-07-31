@@ -9,4 +9,5 @@ Session.vim
 *.v
 Test/NtkToCnfConverter/test
 Test/InterpolationEngine/test
+Test/ResourceAwarePatchGeneration/test
 *.txt

@@ -18,9 +18,14 @@ void ResourceAwarePatchGenerator::interpolation( Abc_Ntk_t *dln, Abc_Obj_t *targ
   engine.setTargetFunction( targetPo      );
   engine.setBaseFunctions ( baseFunctions );
 
+  engine.circuitToCnf ();
+  engine.addClauseA   ();
+  engine.addClauseB   ();
+  engine.interpolation();
+
   Abc_FrameSetCurrentNetwork( pAbc, engine.interpolant() );
 
-  Cmd_CommandExecute( pAbc, const_cast<char*>( "read_genlib " + libName ) );
+  Cmd_CommandExecute( pAbc, const_cast<char*>( string( "read_genlib " + libName ).c_str() ) );
   Cmd_CommandExecute( pAbc, const_cast<char*>( "map" ) );
 
   interpolant = Abc_FrameReadNtk( pAbc );
