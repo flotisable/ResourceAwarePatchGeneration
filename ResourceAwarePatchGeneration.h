@@ -31,6 +31,8 @@ class Weight_gate                     //save weight and PO's address
 
 class ResourceAwarePatchGenerator
 {
+  friend class TestResourceAwarePatchGeneration;
+
   public:
 
       ResourceAwarePatchGenerator(string F_file, string G_file, string W_file);
