@@ -13,16 +13,12 @@ void ResourceAwarePatchGenerator::write_patch( const string patchFileName, const
 {
   using namespace std;
 
+  const string patchName = "patch";
+
   // write patch circuit
-  Abc_Frame_t   *pAbc = Abc_FrameGetGlobalFrame();
-  Abc_Ntk_t     *pNtk = Abc_FrameReadNtk( pAbc );
-  const string  patchName = "patch";
+  if( interpolant == NULL ) return;
 
-  if( pNtk == NULL ) return;
-
-  Abc_NtkSetName( pNtk, const_cast<char*>( patchName.c_str() ) );
-
-  Io_WriteVerilog( pNtk, const_cast<char*>( patchFileName.c_str() ) );
+  Io_WriteVerilog( interpolant, const_cast<char*>( patchFileName.c_str() ) );
   // end write patch circuit
 
   // write patched circuit
@@ -40,7 +36,7 @@ void ResourceAwarePatchGenerator::write_patch( const string patchFileName, const
       fileFvOut << patchName << " p0(";
 
       // write patch output name
-      Abc_NtkForEachPo( pNtk, pObj, i )
+      Abc_NtkForEachPo( interpolant, pObj, i )
       {
         Abc_Obj_t *pNet = Abc_ObjFanin0( pObj );
 
@@ -48,12 +44,12 @@ void ResourceAwarePatchGenerator::write_patch( const string patchFileName, const
       }
       // end write patch output name
       // write patch input name
-      Abc_NtkForEachPi( pNtk, pObj, i )
+      Abc_NtkForEachPi( interpolant, pObj, i )
       {
         Abc_Obj_t *pNet = Abc_ObjFanout0( pObj );
 
         fileFvOut << Abc_ObjName( pNet );
-        if( i + 1 != Abc_NtkPiNum( pNtk ) )
+        if( i + 1 != Abc_NtkPiNum( interpolant ) )
           fileFvOut << ",";
       }
       // end write patch input name
