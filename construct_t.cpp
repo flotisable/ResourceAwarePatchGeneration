@@ -29,6 +29,8 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 	 	Abc_Ntk_t* t_ntk=Abc_NtkAlloc(ABC_NTK_STRASH,ABC_FUNC_AIG,1);
 		Abc_Obj_t* const1=Abc_AigConst1(t_ntk);
 		Abc_Obj_t* const0=Abc_ObjNot(const1);
+		//construct t_po
+		Abc_Obj_t* t=Abc_NtkCreatePo(t_ntk);
 
 
 		Abc_Aig_t* aig_man=(Abc_Aig_t*) t_ntk->pManFunc;
@@ -79,6 +81,14 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 				f1_f0_exor_vec.push_back(Abc_AigXor(aig_man,f1_output,f0_output));
 			
 			}	
+			else if (i>=initial_F_PO_num)
+			{
+				traverse_from_current_to_pi(t_ntk,Abc_ObjFanin0(iter_po));
+				Abc_Obj_t* base_po=Abc_NtkCreatePo(t_ntk);
+				Abc_ObjSetCopy(iter_po,base_po);
+				Abc_ObjAddFanin(base_po,Abc_ObjChild0Copy(iter_po));
+
+			}
 			
 		}
 		cout<< "[INFO] f1,f0 construct success  " << endl;
@@ -154,7 +164,6 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 		}
 		
 		//add po, which is exactly t
-		Abc_Obj_t* t=Abc_NtkCreatePo(t_ntk);
 		//cout << f1_f0_exor_vec.size() << " " << g_f1_exnor_vec.size() << endl;
 		//cout << f1_f0_exor_vec[0] << " " << g_f1_exnor_vec[0] << endl;
 		Abc_ObjAddFanin(t,Abc_AigAnd(aig_man,f1_f0_exor_vec[0],g_f1_exnor_vec[0]));
@@ -164,11 +173,10 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 		//push base_func in t to new gate_list (delete unused?)
 		for(i=0;i<gate_list.size();i++)				 
 		{
-			Abc_Obj_t* temp=Abc_ObjFanin0(gate_list[i]->gate);
-			if (Abc_ObjCopy(temp)!=0&&Abc_ObjData(temp)==0)
+			gate_list[i]->gate=Abc_ObjCopy(gate_list[i]->gate);
+			if (!Abc_ObjIsPo(gate_list[i]->gate))
 			{
-				gate_list[i]->gate=Abc_ObjCopy(temp);
-				new_weight_gate.push_back(gate_list[i]);		
+				cout << "[WARNING] something error in construct t_base " << endl;
 			}
 		}
 		
@@ -176,6 +184,7 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 		target_function=t_ntk;
 
 		cout << "[INFO] t construct success " << endl;
+		cout << Abc_NtkPoNum(t_ntk) << endl;
 		
 		
 		
