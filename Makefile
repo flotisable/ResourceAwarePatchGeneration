@@ -84,6 +84,9 @@ testNtkToCnfConverter:
 testInterpolationEngine:
 	$(MAKE) -e -C $(testDir)/InterpolationEngine
 
+testResourceAwarePatchGeneration:
+	$(MAKE) -e -C $(testDir)/ResourceAwarePatchGeneration
+
 clean:
 	rm *.o $(PROG)
 	$(MAKE) -C $(satAndInterDir) clean
