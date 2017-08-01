@@ -30,6 +30,7 @@ $(PROG): pre_process.o \
 	     read_weight.o main.o \
 	     ResourceAwarePatchGeneration.o \
 	     write_patch.o \
+	     sat_solving.o \
 	     $(satAndInterDir)/interpolation.o \
 	     $(satAndInterDir)/NtkToCnfConverter.o \
 			 $(satAndInterDir)/InterpolationEngine.o \
@@ -69,6 +70,9 @@ read_weight.o: read_weight.cpp ResourceAwarePatchGeneration.h
 construct_t.o: construct_t.cpp ResourceAwarePatchGeneration.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $< 
 
+sat_solving.o: sat_solving.cpp $(satAndInterDir)/NtkToCnfConverter.h ResourceAwarePatchGeneration.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+
 write_patch.o: write_patch.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $< 
 
@@ -83,6 +87,9 @@ testNtkToCnfConverter:
 
 testInterpolationEngine:
 	$(MAKE) -e -C $(testDir)/InterpolationEngine
+
+testResourceAwarePatchGeneration:
+	$(MAKE) -e -C $(testDir)/ResourceAwarePatchGeneration
 
 clean:
 	rm *.o $(PROG)

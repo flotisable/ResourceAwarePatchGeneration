@@ -56,10 +56,9 @@ void TestInterpolationEngine::test()
   sat_solver_store_write( engine.satSolver, const_cast<char*>( "satCnf.txt" ) );
   engine.interpolation(); cout << "interpolation\n";
 
-  Aig_ManDumpVerilog( engine.interpolant(), const_cast<char*>( outFile.c_str() ) );
-  //interpolant = Abc_NtkFromDar( dln, engine.interpolant() );
+  interpolant = engine.interpolant();
 
-  //write( outFile );
+  write( outFile );
 }
 
 void TestInterpolationEngine::read( const std::string &file )
@@ -77,18 +76,17 @@ void TestInterpolationEngine::read( const std::string &file )
   }
 
   baseFunctions.push_back( findPo( dln, "g1" ) );
-  baseFunctions.push_back( findPo( dln, "g2" ) );
+  baseFunctions.push_back( findPo( dln, "g3" ) );
+  baseFunctions.push_back( findPo( dln, "g4" ) );
 
-  if( !baseFunctions[0] || !baseFunctions[1] )
+  if( !baseFunctions[0] || !baseFunctions[1] || !baseFunctions[2] )
     std::cout << "can not find base functions\n";
 }
 
 void TestInterpolationEngine::write( const std::string &file )
 {
-  /*
   interpolant = Abc_NtkToNetlist( interpolant );
 
   Abc_NtkToAig( interpolant );
   Io_WriteVerilog( interpolant, const_cast<char*>( file.c_str() ) );
-  */
 }

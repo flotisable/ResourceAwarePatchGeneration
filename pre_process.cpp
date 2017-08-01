@@ -1,6 +1,7 @@
 #include "ResourceAwarePatchGeneration.h"
 #include <fstream>
 #include <map>
+#include <assert.h>
 
 
 using namespace std;
@@ -28,9 +29,9 @@ bool is_obj_in_vec ( T obj, vector<T> obj_vec)
 void ResourceAwarePatchGenerator:: pre_process()
 {
     cout<<"[INFO] preprocessing ..."<<endl;
-	cout << gate_list.size() << endl;
+	//cout << gate_list.size() << endl;
 	DP_reduce_base_function ();
-	cout << gate_list.size() << endl;
+	//cout << gate_list.size() << endl;
 
 	convert_ntk_to_aig_with_base_func (false);
 	//Abc_NtkMakeOnePo
@@ -127,40 +128,77 @@ void ResourceAwarePatchGenerator::convert_ntk_to_aig_with_base_func (bool delete
 	initial_F_PO_num=initial_po_num;
 	int i;
 	cout << initial_po_num << endl;
+	Abc_Obj_t* iter_pi;
+	Abc_Obj_t* iter_po;
+	/*
+	Abc_NtkForEachPo(initial_F,iter_po,i)
+	{
+		cout << Abc_ObjName(iter_po) <<endl;
+	}
+	*/
         for (i=0;i<gate_list.size();i++)
 	{
 		if (Abc_ObjIsPo(gate_list[i]->gate))
+		{
 			cout << "[Warning] base func is po" << endl;
+		}
 		Abc_Obj_t* base_po=Abc_NtkCreatePo(initial_F);
 		Abc_ObjAddFanin (base_po,gate_list[i]->gate);
 	}
 	
-	//deal with target part
-	/*
-	for (i=0;i<t_list.size();i++)
-	{
-		Abc_Obj_t* t_po=Abc_NtkCreatePo(initial_F);
-		Abc_ObjAddFanin (t_po,t_list[i]);
-	}
-	*/
 	
 	Abc_Ntk_t* strashed_F=Abc_NtkStrash(initial_F,0,1,0);
 	for (i=0;i<gate_list.size();i++)
 	{
 		gate_list[i]->gate=Abc_NtkPo(strashed_F,i+initial_po_num);
 	}
-	/*
+	
+	//deal with target part
 	for (i=0;i<t_list.size();i++)
 	{
-		Abc_Obj_t* t_po=Abc_NtkCreatePo(initial_F);
-		Abc_ObjAddFanin (t_po,t_list[i]);
+		t_list[i]=Abc_NtkPi(strashed_F,Abc_NtkPiNum(strashed_F)-t_list.size()+i);
 	}
-	*/
+	
+	//set pi, po copy and change t_pi_list,t_po_list to strashed_F (delete unused set?)
+	Abc_NtkForEachPi(initial_F,iter_pi,i)
+	{
+		Abc_ObjSetCopy(iter_pi,Abc_NtkPi(strashed_F,i));
+	}
+	Abc_NtkForEachPo(initial_F,iter_po,i)
+	{
+		Abc_ObjSetCopy(iter_po,Abc_NtkPo(strashed_F,i));
+	}
+
+
+	for (i=0;i<t_list.size();++i)
+	{
+		set<Abc_Obj_t*>::iterator it;
+
+		//cout << "pi " <<t_Pi_list[i].size() << endl;
+		//cout << "po " <<t_Po_list[i].size() << endl;
+		set<Abc_Obj_t*> new_t_pi_list;
+		for (it=t_Pi_list[i].begin();it!=t_Pi_list[i].end();++it)
+		{
+			assert(Abc_ObjIsPi(*it));
+			new_t_pi_list.insert(Abc_ObjCopy(*it));
+		}
+
+
+		set<Abc_Obj_t*> new_t_po_list;	
+		for (it=t_Po_list[i].begin();it!=t_Po_list[i].end();++it)
+		{
+			assert(Abc_ObjIsPo(*it));
+			new_t_po_list.insert(Abc_ObjCopy(*it));
+		}
+
+		t_Pi_list[i]=new_t_pi_list;
+		t_Po_list[i]=new_t_po_list;
+	}
 
 
 
  	//[Warning] Delete Po is dangerous
-	cout << Abc_NtkPoNum(strashed_F) << endl; ;
+	//cout << Abc_NtkPoNum(strashed_F) << endl; ;
 	if (delete_PO)
 	{
         	for (i=0;i<gate_list.size();i++)
@@ -171,8 +209,20 @@ void ResourceAwarePatchGenerator::convert_ntk_to_aig_with_base_func (bool delete
 		
 		}
 	}
-	cout << Abc_NtkPoNum(strashed_F) << endl;
+	//cout << Abc_NtkPoNum(strashed_F) << endl;
+
+	//Abc_NtkDelete(initial_F);
 	initial_F=strashed_F;
+
+	//strash G part
+    	Abc_Ntk_t* temp_Ntk;
+	temp_Ntk = Abc_NtkStrash( initial_G, 0, 1, 0 );
+    	//Abc_NtkDelete( initial_G );   	//delete?
+    	initial_G = temp_Ntk;
+    	temp_Ntk = NULL;
+
+
+	
 	//t_list
 	//t_Pi_list
 	//t_Po_list

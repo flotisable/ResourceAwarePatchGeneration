@@ -27,8 +27,9 @@ int main( int argc, char *argv[] )
 
   solver.DP_reduce_base_function();
   solver.delete_unused_PO();//t fanout cone po, t fanout and fanin cone pi
-  //solver.convert_ntk_to_aig_with_base_func(false);
-  //solver.construct_t(true);
+  solver.convert_ntk_to_aig_with_base_func(false);
+  solver.construct_t(true);
+  solver.sat_solve();
 
   //solver.pre_process();
   
