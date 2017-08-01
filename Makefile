@@ -30,6 +30,7 @@ $(PROG): pre_process.o \
 	     read_weight.o main.o \
 	     ResourceAwarePatchGeneration.o \
 	     write_patch.o \
+	     functional_dependency.o \
 	     sat_solving.o \
 	     $(satAndInterDir)/interpolation.o \
 	     $(satAndInterDir)/NtkToCnfConverter.o \
@@ -73,10 +74,13 @@ construct_t.o: construct_t.cpp ResourceAwarePatchGeneration.h
 sat_solving.o: sat_solving.cpp $(satAndInterDir)/NtkToCnfConverter.h ResourceAwarePatchGeneration.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $< 
 
-write_patch.o: write_patch.cpp
+write_patch.o: write_patch.cpp ResourceAwarePatchGeneration.h
 	$(CXX) $(CXXFLAGS) -c -o $@ $< 
 
-$(satAndInterDir)/interpolation.o $(satAndInterDir)/NtkToCnfConverter.o $(satAndInterDir)/InterpolationEngine.o:
+functional_dependency.o: functional_dependency.cpp ResourceAwarePatchGeneration.h
+	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+
+$(satAndInterDir)/interpolation.o $(satAndInterDir)/NtkToCnfConverter.o $(satAndInterDir)/InterpolationEngine.o: $(satAndInterDir)/interpolation.cpp $(satAndInterDir)/NtkToCnfConverter.cpp $(satAndInterDir)/InterpolationEngine.cpp $(satAndInterDir)/NtkToCnfConverter.h $(satAndInterDir)/InterpolationEngine.h
 	$(MAKE) -e -C $(satAndInterDir)
 
 debug: CXXFLAGS += -g -O

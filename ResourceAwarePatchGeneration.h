@@ -52,7 +52,7 @@ class ResourceAwarePatchGenerator
       void sat_solve ();         //solve CNF by sat
       void interpolation ( Abc_Ntk_t *dln, Abc_Obj_t *targetPo, const vector<Abc_Obj_t*> &baseFunctions );       //construct t's circuit
       
-      void functional_dependency() {}   //inculde above three step 
+      void functional_dependency();    //inculde above three step 
       void write_patch( const string patchedFileName, const string patchFileName );          //write the result to file as the competition format
 
     //sub-function
