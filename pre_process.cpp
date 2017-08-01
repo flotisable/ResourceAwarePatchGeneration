@@ -70,6 +70,7 @@ void ResourceAwarePatchGenerator::DP_reduce_base_function ()
 				 
 			if (j==gate_list.size()-1)
 			{
+				cout << Abc_ObjName(iter_obj) << endl;
 				cout << "[WARNING] not all pi is in base function" << endl;
 				
 			}
@@ -127,7 +128,7 @@ void ResourceAwarePatchGenerator::convert_ntk_to_aig_with_base_func (bool delete
 	int initial_po_num=Abc_NtkPoNum(initial_F) ;
 	initial_F_PO_num=initial_po_num;
 	int i;
-	cout << initial_po_num << endl;
+	//cout << initial_po_num << endl;
 	Abc_Obj_t* iter_pi;
 	Abc_Obj_t* iter_po;
 	/*
