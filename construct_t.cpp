@@ -180,11 +180,35 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 			}
 		}
 		
-		gate_list=new_weight_gate;
+		//gate_list=new_weight_gate;
+		cout << gate_list.size() << endl;
+		/*	
+		t_ntk = Abc_NtkStrash( t_ntk, 0, 1, 0 );
+		for (i=0;i<gate_list.size();i++)
+		{
+			gate_list[i]->gate=Abc_NtkPo(t_ntk,i+1);
+		}
+		*/
 		target_function=t_ntk;
+		//Abc_NtkIsAigNetlist
 
 		cout << "[INFO] t construct success " << endl;
-		cout << Abc_NtkPoNum(t_ntk) << endl;
+		//cout << Abc_NtkPoNum(t_ntk) << endl;
+		//cout << t_ntk->ntkType << " " << t_ntk->ntkFunc << endl;
+		//Io_WriteBblif( t_ntk, "t.v" );
+		/*
+		Abc_NtkForEachObj(t_ntk,iter_obj,i)
+		{
+			cout << Abc_ObjName(iter_obj) << endl;
+		}
+		*/	
+		Abc_FrameSetCurrentNetwork(pAbc,t_ntk);
+		char Command[1000];
+    		sprintf( Command, "write t.blif");
+    		if ( Cmd_CommandExecute( pAbc, Command ) )
+    		{
+        		fprintf( stdout, "Cannot execute command \"%s\".\n", Command );
+   		}
 		
 		
 		

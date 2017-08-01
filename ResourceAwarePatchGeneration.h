@@ -11,6 +11,8 @@ extern "C"
 #include "base/main/mainInt.h"
 #include "base/abc/abc.h"
 #include "base/io/ioAbc.h"
+
+
 }
 
 using namespace std;
@@ -47,7 +49,7 @@ class ResourceAwarePatchGenerator
       void construct_t (bool);                // contrutct base on initial F
       void construct_DLN () {}          //transform initial circuit to DLN circuit 
       void transform_to_CNF () {}       //transform DLN circuit to CNF
-      void sat_solve () {}          //solve CNF by sat
+      void sat_solve ();         //solve CNF by sat
       void interpolation ( Abc_Ntk_t *dln, Abc_Obj_t *targetPo, const vector<Abc_Obj_t*> &baseFunctions );       //construct t's circuit
       
       void functional_dependency() {}   //inculde above three step 
