@@ -20,13 +20,13 @@ void trav_Po_add_to_set( Abc_Obj_t * pNode, set<Abc_Obj_t*> pSet );
 class Weight_gate                     //save weight and PO's address
 {
       public:
-              Weight_gate(Abc_Obj_t* pGate = NULL, string pName = string(), int pWeight = 0)
-                  :gate(pGate), name(pName), weight(pWeight){}
-              Weight_gate(){}
-              ~Weight_gate(){}
-              Abc_Obj_t* gate;
-              string name;
-              int        weight;
+        Weight_gate(Abc_Obj_t* pGate = NULL, string pName = string(), int pWeight = 0)
+            :gate(pGate), name(pName), weight(pWeight){}
+        Weight_gate(){}
+        ~Weight_gate(){}
+        Abc_Obj_t* gate;
+        string name;
+        int        weight;
 };
 
 class ResourceAwarePatchGenerator
