@@ -20,4 +20,6 @@ void ResourceAwarePatchGenerator::replace_t_with_PI()
 	//Abc_Ntk_t* temp_F = Abc_NtkToNetlist( initial_F );
 	//Abc_NtkToAig( temp_F );
 	//Io_WriteVerilog( temp_F, "F_replace_t_with_PI.v" );
+
+	
 }

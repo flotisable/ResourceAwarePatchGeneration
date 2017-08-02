@@ -42,8 +42,9 @@ void ResourceAwarePatchGenerator::read_weight()
 		char *name = Abc_ObjName( pObj );
 		
 		map< string, int >::iterator iter;
-		
-		if( ( iter = name_to_weight.find( string(name) ) ) != name_to_weight.end() ){    //this net weight is not defined
+	
+
+		if( ( iter = name_to_weight.find( string(name) ) ) != name_to_weight.end()){    //this net weight is not defined
 			Weight_gate* temp = new Weight_gate( pObj, string(name), iter->second );
 			
 			name_to_weight.erase( iter );
@@ -64,4 +65,7 @@ void ResourceAwarePatchGenerator::read_weight()
 	t_Po_list.resize( t_list.size() );
 
 	//cout<<"gate_list.size()=="<<gate_list.size()<<endl;
+
+
+
 }

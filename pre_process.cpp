@@ -117,6 +117,7 @@ void ResourceAwarePatchGenerator::DP_reduce_base_function ()
 	}
 	cout << "[INFO] " << reduced_base_count << " base function reduced" << endl;
 	gate_list=new_weight_gate;
+
 }
 
 void ResourceAwarePatchGenerator::convert_ntk_to_aig_with_base_func (bool delete_PO)
@@ -130,14 +131,31 @@ void ResourceAwarePatchGenerator::convert_ntk_to_aig_with_base_func (bool delete
 	cout << initial_po_num << endl;
 	Abc_Obj_t* iter_pi;
 	Abc_Obj_t* iter_po;
-	/*
-	Abc_NtkForEachPo(initial_F,iter_po,i)
-	{
-		cout << Abc_ObjName(iter_po) <<endl;
-	}
-	*/
+	
+	//Abc_NtkForEachPo(initial_F,iter_po,i)
+	//{
+	//	cout << Abc_ObjName(iter_po) <<endl;
+	//}
+	
+
         for (i=0;i<gate_list.size();i++)
 	{
+		//for(int i=0;i<gate_list.size();++i)
+        //cout<<"preprocess gate_list_print: "<<gate_list[i]->gate<<endl;
+
+
+//		cout<<"gate_list.size()"<<gate_list.size()<<endl;
+//for(int ii=0;ii<gate_list.size();++ii){
+//	cout<<"weight= "<<gate_list[ii]->weight<<endl;
+//	cout<<"gate_list->gate = "<<gate_list[ii]->gate<<endl;
+//        if( Abc_ObjIsPo( gate_list[ii]->gate ) )
+//            cout<<"是Po"<<" type= "<<gate_list[ii]->gate->Type<<endl;
+//        else
+//        	cout<<"否Po"<<" type= "<<gate_list[ii]->gate->Type<<endl;
+//        cout<<"****************"<<endl;
+//}
+//cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
+
 		if (Abc_ObjIsPo(gate_list[i]->gate))
 		{
 			cout << "[Warning] base func is po" << endl;

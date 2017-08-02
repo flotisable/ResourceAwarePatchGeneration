@@ -13,6 +13,9 @@ void ResourceAwarePatchGenerator::delete_unused_PO()
     Abc_Obj_t *pNode, *pPo, *pPi;  
     char *name;
 
+
+
+
     //delete unuse Po on F and G
     Abc_NtkForEachPo( initial_F, pPo, i ){
 		//cout<<"18"<<endl;
@@ -31,7 +34,8 @@ void ResourceAwarePatchGenerator::delete_unused_PO()
 			//cout<<"  "<<Abc_ObjName(pPo)<<"Po is in t_i fanout cone"<<endl;
 		}
     }
-
+    //for(int i=0;i<gate_list.size();++i)
+    //    cout<<"gate_list_print: "<<gate_list[i]->gate<<endl;
     //Abc_Ntk_t* temp_F = Abc_NtkToNetlist( initial_F );
     //Abc_NtkToAig( temp_F );
     //Io_WriteVerilog( temp_F, "F_delete_PO.v" );
@@ -86,13 +90,13 @@ void ResourceAwarePatchGenerator::delete_unused_PO()
 	cout<<"  Abc_NtkObjNum "<< Abc_NtkObjNum(initial_F)<<endl;
 	//cout<<"  Abc_NtkObjNum G "<< Abc_NtkObjNum(initial_G)<<endl;
     
-    Abc_Ntk_t* temp_F = Abc_NtkToNetlist( initial_F );
+    /*Abc_Ntk_t* temp_F = Abc_NtkToNetlist( initial_F );
     Abc_NtkToAig( temp_F );
     Io_WriteVerilog( temp_F, "F_delete_PO_PI.v" );
     temp_G = Abc_NtkToNetlist( initial_G );
     Abc_NtkToAig( temp_G );
     Io_WriteVerilog( temp_G, "G_delete_PO_PI.v" );
-
+*/
 /*
     for(int i=0;i<t_list.size();++i){
         cout<<"t= "<<Abc_ObjName( t_list[i] )<<endl;
@@ -108,4 +112,7 @@ void ResourceAwarePatchGenerator::delete_unused_PO()
         cout<<endl;
     }
     */
+    
+    //for(int i=0;i<gate_list.size();++i)
+    //    cout<<"gate_list_print: "<<gate_list[i]->gate<<endl;
 }
