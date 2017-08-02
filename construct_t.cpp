@@ -72,8 +72,8 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 			
 				Abc_Obj_t* f1_output=Abc_ObjCopy(Abc_ObjFanin0(iter_po));
 				Abc_Obj_t* f0_output=(Abc_Obj_t*)Abc_ObjData(Abc_ObjFanin0(iter_po));
-				cout << f1_output <<endl;
-				cout << f0_output <<endl;
+				//cout << f1_output <<endl;
+				//cout << f0_output <<endl;
 				if (f1_output==0||f0_output==0)
 				{
 					cout << "[WARNING] something error in construct t " << endl;
@@ -181,7 +181,7 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 		}
 		
 		//gate_list=new_weight_gate;
-		cout << gate_list.size() << endl;
+		//cout << gate_list.size() << endl;
 		/*	
 		t_ntk = Abc_NtkStrash( t_ntk, 0, 1, 0 );
 		for (i=0;i<gate_list.size();i++)
