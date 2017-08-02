@@ -114,7 +114,7 @@ void formatPatch( const string &patchFileName, const string &patchTempFileName )
     {
       case 'g': inputSignals.push_back( buffer );   break;
       case 't': outputSignals.push_back( buffer );  break;
-      default:  outputSignals.push_back( buffer );  break;
+      default:  inputSignals.push_back( buffer );   break;
     }
   }
   stringStream.clear();
