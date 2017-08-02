@@ -104,7 +104,7 @@ void formatPatch( const string &patchFileName, const string &patchTempFileName )
   while( stringStream >> buffer )
   {
     for( int i = 1 ; i < buffer.size() ; ++i )
-       if( !isalnum( buffer[i] ) )
+       if( !isalnum( buffer[i] ) && buffer[i] != '_' )
        {
          buffer = buffer.substr( 0, i );
          break;
