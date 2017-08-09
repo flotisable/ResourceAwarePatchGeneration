@@ -32,8 +32,6 @@ int main( int argc, char *argv[] )
   solver.simulated_annealing();
 
   //solver.pre_process();
-  
-  //solver.construct_DLN();
   solver.functional_dependency();
   solver.write_patch( patchFileName, patchedFileName );
   

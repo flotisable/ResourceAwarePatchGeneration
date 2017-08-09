@@ -10,4 +10,6 @@ Session.vim
 Test/NtkToCnfConverter/test
 Test/InterpolationEngine/test
 Test/ResourceAwarePatchGeneration/test
+Test/ResourceAwarePatchGeneration/*.genlib
 *.txt
+*.blif

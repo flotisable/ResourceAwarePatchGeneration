@@ -20,9 +20,11 @@ void InterpolationEngine::circuitToCnf()
 {
   if( !dln || !targetFunction || baseFunctions.empty() ) return; // precondition
 
+  // setup cnf converter
   converter.setCircuit       ( dln             );
   converter.setTargetFunction( targetFunction  );
   converter.setBaseFunctions ( baseFunctions   );
+  // end setup cnf converter
 
   converter.convert();
 }

@@ -21,7 +21,7 @@ void ResourceAwarePatchGenerator::write_patch( const string patchFileName, const
   const string patchTempFileName  = "patchTemp.v";
 
   // write patch circuit
-  if( interpolant == NULL ) return;
+  if( !interpolant ) return;
 
   Io_WriteVerilog( interpolant, const_cast<char*>( patchTempFileName.c_str() ) );
   formatPatch( patchFileName, patchTempFileName );
@@ -49,6 +49,7 @@ void ResourceAwarePatchGenerator::write_patch( const string patchFileName, const
         fileFvOut << Abc_ObjName( pNet ) << ",";
       }
       // end write patch output name
+
       // write patch input name
       Abc_NtkForEachPi( interpolant, pObj, i )
       {
