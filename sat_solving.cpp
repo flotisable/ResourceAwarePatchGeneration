@@ -73,7 +73,7 @@ void ResourceAwarePatchGenerator::simulated_annealing ()
 	cout << "initial_weight:" << best_weight << endl;
 	float current_temp=100000;
 	float temp_decrease_ratio=0.9; 
-	int sec=600;
+	int sec=10;
 	cout << "[INFO] Simulated Annealing..  Timeout: "  << sec << " secs." <<endl;
 	while ( float(clock())/CLOCKS_PER_SEC <sec)
 	{

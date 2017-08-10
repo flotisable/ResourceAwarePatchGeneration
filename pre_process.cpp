@@ -103,6 +103,7 @@ void ResourceAwarePatchGenerator::DP_reduce_base_function ()
 				if (gate_list[j]->weight>dp_weight)
 				{
 					reduced_base_count+=1;
+					delete gate_list[j];
 				}
 				else
 				{
@@ -231,7 +232,9 @@ void ResourceAwarePatchGenerator::convert_ntk_to_aig_with_base_func (bool delete
 	//cout << Abc_NtkPoNum(strashed_F) << endl;
 
 	//Abc_NtkDelete(initial_F);
+	//Abc_NtkDelete(initial_F);
 	initial_F=strashed_F;
+	Abc_FrameSetCurrentNetwork(pAbc,strashed_F);
 
 	//strash G part
     	Abc_Ntk_t* temp_Ntk;

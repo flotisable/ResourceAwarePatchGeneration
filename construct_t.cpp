@@ -129,10 +129,14 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 		//cout << f1_f0_exor_vec.size() << " " << g_f1_exnor_vec.size() << endl;
 		
 		//construct miter of exor and exnor nodes
+		cout << f1_f0_exor_vec.size() << endl;
 		while (f1_f0_exor_vec.size()>1)
 		{
+			
 			for(int j=0;j<f1_f0_exor_vec.size();j+=2) 
-			{
+			{	
+				if (j==f1_f0_exor_vec.size()-1)
+					break;
 				f1_f0_exor_vec[j/2]=Abc_AigOr(aig_man,f1_f0_exor_vec[j],f1_f0_exor_vec[j+1]);
 			}
 			if (f1_f0_exor_vec.size()%2==1)
@@ -150,6 +154,8 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 		{
 			for(int j=0;j<g_f1_exnor_vec.size();j+=2) 
 			{
+				if (j==g_f1_exnor_vec.size()-1)
+					break;
 				g_f1_exnor_vec[j/2]=Abc_AigAnd(aig_man,g_f1_exnor_vec[j],g_f1_exnor_vec[j+1]);
 			}
 			if (g_f1_exnor_vec.size()%2==1)
@@ -168,7 +174,7 @@ void ResourceAwarePatchGenerator::construct_t(bool single_target)
 		//cout << f1_f0_exor_vec[0] << " " << g_f1_exnor_vec[0] << endl;
 		Abc_ObjAddFanin(t,Abc_AigAnd(aig_man,f1_f0_exor_vec[0],g_f1_exnor_vec[0]));
 		
-		vector<Weight_gate*> new_weight_gate;
+		//vector<Weight_gate*> new_weight_gate;
 
 		//push base_func in t to new gate_list (delete unused?)
 		for(i=0;i<gate_list.size();i++)				 

@@ -14,5 +14,10 @@ ResourceAwarePatchGenerator::ResourceAwarePatchGenerator(string F_file, string G
 
 ResourceAwarePatchGenerator::~ResourceAwarePatchGenerator()
 {
+  for (int i=0;i<gate_list.size();i++)
+  {
+	delete gate_list[i];
+  }
+  Abc_NtkDelete(initial_G);
   Abc_Stop();
 }
