@@ -6,12 +6,14 @@ extern "C"
 {
 #include "base/main/main.h"
 #include "base/cmd/cmd.h"
+#include "map/mio/mio.h"
+  
+  Abc_Ntk_t* Abc_NtkMap( Abc_Ntk_t*, double, double, double, float, float, float, int, int, int, int, int, int );
 }
 
 void ResourceAwarePatchGenerator::interpolation( Abc_Ntk_t *dln, Abc_Obj_t *targetPo, const vector<Abc_Obj_t*> &baseFunctions )
 {
-  const string libName      = "test.genlib";
-  const string tempFileName = "testTemp.v";
+  const string libName = "test.genlib";
 
   InterpolationEngine engine;
   Abc_Ntk_t           *circuit;
@@ -30,19 +32,8 @@ void ResourceAwarePatchGenerator::interpolation( Abc_Ntk_t *dln, Abc_Obj_t *targ
   // end do interpolation
 
   // write interpolant as temporary file
-  circuit = engine.interpolant();
-  circuit = Abc_NtkToNetlist( circuit );
+  Mio_UpdateGenlib( Mio_LibraryRead( const_cast<char*>( libName.c_str() ), NULL, NULL, 0 ) );
 
-  Abc_NtkToAig( circuit );
-  Io_WriteVerilog( circuit, const_cast<char*>( tempFileName.c_str() ) );
-  // end write interpolant as temporary file
-
-  // technology mapping
-  Cmd_CommandExecute( pAbc, const_cast<char*>( string( "read " + tempFileName ).c_str() ) );
-  Cmd_CommandExecute( pAbc, const_cast<char*>( "strash" ) );
-  Cmd_CommandExecute( pAbc, const_cast<char*>( string( "read_genlib " + libName ).c_str() ) );
-  Cmd_CommandExecute( pAbc, const_cast<char*>( "map" ) );
-  // end technology mapping
-
-  interpolant = Abc_NtkToNetlist( Abc_FrameReadNtk( pAbc ) );
+  circuit     = Abc_NtkMap( engine.interpolant(), -1, 0, 0, 0, 0, 250, 0, 1, 0, 0, 0, 0 );
+  interpolant = Abc_NtkToNetlist( circuit );
 }
