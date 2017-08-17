@@ -17,7 +17,7 @@ void ResourceAwarePatchGenerator::interpolation( Abc_Ntk_t *dln, Abc_Obj_t *targ
   Abc_Ntk_t           *circuit;
 
   // setup interpolation engine
-  engine.setDln           ( dln           );
+  engine.setCircuit       ( dln           );
   engine.setTargetFunction( targetPo      );
   engine.setBaseFunctions ( baseFunctions );
   // end setup interpolation engine

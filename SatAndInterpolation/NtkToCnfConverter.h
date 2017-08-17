@@ -26,13 +26,13 @@ class NtkToCnfConverter
 {
   friend class TestNtkToCnfConverter;
 
+  public:
+
   enum CircuitType
   {
     on,
     off
   };
-
-  public:
 
     NtkToCnfConverter();
     ~NtkToCnfConverter();
