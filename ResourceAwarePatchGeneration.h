@@ -6,14 +6,14 @@
 
 #define WEIGHT_MAX 10000
 
+// abc related code
 extern "C"
 {
 #include "base/main/mainInt.h"
 #include "base/abc/abc.h"
 #include "base/io/ioAbc.h"
-
-
 }
+// end abc related code
 
 using namespace std;
 
@@ -48,7 +48,8 @@ class ResourceAwarePatchGenerator
       void read_weight();
       void construct_t (bool);                // contrutct base on initial F
       void simulated_annealing ();         //find base func by SA
-      void interpolation ( Abc_Ntk_t *dln, Abc_Obj_t *targetPo, const vector<Abc_Obj_t*> &baseFunctions );       //construct t's circuit
+      void interpolation (  Abc_Ntk_t *circuitOn, Abc_Obj_t *targetOn,  const vector<Abc_Obj_t*> &basesOn,
+                            Abc_Ntk_t *circuitOff = NULL, Abc_Obj_t *targetOff = NULL, const vector<Abc_Obj_t*> &basesOff = vector<Abc_Obj_t*>() );       //construct t's circuit
       
       void functional_dependency();    //inculde above three step 
       void write_patch( const string patchedFileName, const string patchFileName );          //write the result to file as the competition format
