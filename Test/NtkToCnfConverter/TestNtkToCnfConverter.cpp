@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <fstream>
+using namespace std;
 
 extern "C"
 {
@@ -11,23 +12,22 @@ extern "C"
 #include "base/cmd/cmd.h"
 }
 
-Abc_Obj_t* findPo( Abc_Ntk_t *circuit, const std::string &name )
+Abc_Obj_t* findPo( Abc_Ntk_t *circuit, const string &name )
 {
   Abc_Obj_t *po;
   int       i;
 
   Abc_NtkForEachPo( circuit, po, i )
-    if( std::string( Abc_ObjName( po ) ) == name )
+    if( string( Abc_ObjName( po ) ) == name )
       return po;
 
   return NULL;
 }
 
-void writeCircuit( const std::string &outFile, Abc_Ntk_t *circuit )
+void writeCircuit( const string &outFile, Abc_Ntk_t *circuit )
 {
-  Abc_Ntk_t *newCircuit;
+  Abc_Ntk_t *newCircuit = Abc_NtkToNetlist( circuit );
 
-  newCircuit = Abc_NtkToNetlist( circuit );
   Abc_NtkToAig( newCircuit );
 
   Io_WriteVerilog( newCircuit, const_cast<char*>( outFile.c_str() ) );
@@ -45,44 +45,55 @@ TestNtkToCnfConverter::~TestNtkToCnfConverter()
 
 void TestNtkToCnfConverter::test()
 {
-  const std::string inFile = "test.v";
+  const string inFile = "test.v";
 
-  Abc_Ntk_t               *circuit = Io_ReadVerilog( const_cast<char*>( inFile.c_str() ), 0 );
-  Abc_Obj_t               *target;
-  std::vector<Abc_Obj_t*> bases;
+  Abc_Ntk_t           *circuit = Io_ReadVerilog( const_cast<char*>( inFile.c_str() ), 0 );
+  Abc_Obj_t           *target;
+  vector<Abc_Obj_t*>  bases;
 
+  // setup circuit
   circuit = Abc_NtkToLogic( circuit );
   circuit = Abc_NtkStrash( circuit, 1, 1, 0 );
+  // end setup circuit
 
-  target = findPo( circuit, "out" );
+  // find target function
+  target = findPo( circuit, "t" );
   if( !target )
   {
-    std::cout << "can not find target function\n";
+    cout << "can not find target function\n";
     return;
   }
-  std::cout << "target:" << Abc_ObjId( target ) << "\n";
+  cout << "target:" << Abc_ObjId( target ) << "\n";
+  // end find target function
 
+  // find base functions
   bases.push_back( findPo( circuit, "g1" ) );
   bases.push_back( findPo( circuit, "g2" ) );
-  if( !bases[0] || !bases[1] )
-  {
-    std::cout << "can not find base functions\n";
-    return;
-  }
-  std::cout << "base 1:" << Abc_ObjId( bases[0] ) << "\n";
-  std::cout << "base 2:" << Abc_ObjId( bases[1] ) << "\n";
+  for( int i = 0 ; i < bases.size() ; ++i )
+    if( !bases[i] )
+    {
+      cout << "can not find base functions\n";
+      return;
+    }
+  cout << "base 1:" << Abc_ObjId( bases[0] ) << "\n";
+  cout << "base 2:" << Abc_ObjId( bases[1] ) << "\n";
+  // end find base functions
 
+  // setup converter
   converter.setCircuit        ( circuit );
   converter.setTargetFunction ( target  );
   converter.setBaseFunctions  ( bases   );
+  // end setup converter
 
+  // test NtkToCnfConverter member functions
   testCreateOnOffCircuit();
   testCircuitToCnf      ();
+  // end test NtkToCnfConverter member functions
 }
 
 void TestNtkToCnfConverter::testCreateOnOffCircuit()
 {
-  const std::string outFile = "testOut";
+  const string outFile = "testOut";
 
   converter.createOnOffCircuit();
 
@@ -92,18 +103,16 @@ void TestNtkToCnfConverter::testCreateOnOffCircuit()
 
 void TestNtkToCnfConverter::testCircuitToCnf()
 {
-  const std::string aigLog = "aigCoLit.txt";
-  const std::string litLog = "lit.txt";
+  const string aigLog = "aigCoLit.txt";
+  const string litLog = "lit.txt";
 
+  ofstream  file( aigLog.c_str() );
   Aig_Obj_t *co;
   int       i;
 
-  std::ofstream file;
-
   converter.circuitToCnf();
 
-  file.open( aigLog.c_str() );
-
+  // write literal mapping of AIG node 
   Aig_ManForEachCo( converter.aigOn, co, i )
     file << converter.cnfOn()->pVarNums[co->Id] << "\n";
 
@@ -113,7 +122,9 @@ void TestNtkToCnfConverter::testCircuitToCnf()
     file << converter.cnfOff()->pVarNums[co->Id] << "\n";
 
   file.close();
+  // end write literal mapping of AIG node 
 
+  // write literals
   file.open( litLog.c_str() );
 
   for( int i = 0 ; i < converter.literalsOn().size() ; ++i )
@@ -126,4 +137,5 @@ void TestNtkToCnfConverter::testCircuitToCnf()
 
   Cnf_DataWriteIntoFile( converter.cnfOn  (), const_cast<char*>( "cnfOn.txt"  ), 1, NULL, NULL );
   Cnf_DataWriteIntoFile( converter.cnfOff (), const_cast<char*>( "cnfOff.txt" ), 1, NULL, NULL );
+  // end write literals
 }

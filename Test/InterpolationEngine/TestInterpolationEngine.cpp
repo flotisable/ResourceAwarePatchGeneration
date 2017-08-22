@@ -8,8 +8,6 @@ extern "C"
 #include "base/main/main.h"
 #include "base/io/ioAbc.h"
 #include "aig/aig/aig.h"
-
-Abc_Ntk_t* Abc_NtkFromDar( Abc_Ntk_t* , Aig_Man_t* );
 }
 
 Abc_Obj_t* findPo( Abc_Ntk_t *circuit, const std::string &name )
@@ -43,7 +41,7 @@ void TestInterpolationEngine::test()
 
   read( inFile );
 
-  engine.setDln           ( dln             );
+  engine.setCircuit       ( dln             );
   engine.setTargetFunction( targetFunction  );
   engine.setBaseFunctions ( baseFunctions   );
 
@@ -67,7 +65,7 @@ void TestInterpolationEngine::read( const std::string &file )
   dln = Abc_NtkToLogic( dln );
   dln = Abc_NtkStrash( dln, 1, 1, 0 );
 
-  targetFunction = findPo( dln, "out" );
+  targetFunction = findPo( dln, "t" );
 
   if( !targetFunction )
   {

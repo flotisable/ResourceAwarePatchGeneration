@@ -139,7 +139,7 @@ void TestResourceAwarePatchGeneration::testWritePatch()
   circuit = Abc_NtkToLogic( circuit );
   circuit = Abc_NtkStrash ( circuit, 1, 1, 0 );
 
-  targetFunction = findPo( circuit, "out" );
+  targetFunction = findPo( circuit, "t" );
 
   if( !targetFunction )
   {

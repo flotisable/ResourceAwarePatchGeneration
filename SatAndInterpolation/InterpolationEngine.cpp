@@ -1,8 +1,5 @@
 #include "InterpolationEngine.h"
 
-#include <iostream>
-#include <queue>
-
 extern "C"
 {
 #include "sat/bsat/satStore.h"
@@ -10,19 +7,28 @@ extern "C"
 
 InterpolationEngine::InterpolationEngine()
 {
-  dln             = NULL;
-  targetFunction  = NULL;
+  circuitOn       = circuitOff  = NULL;
+  targetOn        = targetOff   = NULL;
   mInterpolant    = NULL;
   satSolver       = NULL;
 }
 
 void InterpolationEngine::circuitToCnf()
 {
-  if( !dln || !targetFunction || baseFunctions.empty() ) return; // precondition
+  if( !circuitOn || !targetOn || basesOn.empty() ) return; // precondition
 
-  converter.setCircuit       ( dln             );
-  converter.setTargetFunction( targetFunction  );
-  converter.setBaseFunctions ( baseFunctions   );
+  // setup cnf converter
+  converter.setCircuit       ( circuitOn, NtkToCnfConverter::on   );
+  converter.setTargetFunction( targetOn,  NtkToCnfConverter::on   );
+  converter.setBaseFunctions ( basesOn,   NtkToCnfConverter::on   );
+
+  if( circuitOff && targetOff && !basesOff.empty() && basesOn.size() == basesOff.size() )
+  {
+    converter.setCircuit       ( circuitOff,  NtkToCnfConverter::off  );
+    converter.setTargetFunction( targetOff,   NtkToCnfConverter::off  );
+    converter.setBaseFunctions ( basesOff,    NtkToCnfConverter::off  );
+  }
+  // end setup cnf converter
 
   converter.convert();
 }
@@ -65,7 +71,7 @@ void InterpolationEngine::addClauseB()
   // end add clause B
 
   // add common variables clause
-  for( int i = 0 ; i < baseFunctions.size() ; ++i )
+  for( int i = 0 ; i < basesOn.size() ; ++i )
   {
      lits[0] = toLitCond( converter.literalsOn ()[i+1], 0 );
      lits[1] = toLitCond( converter.literalsOff()[i+1], 1 );
@@ -118,10 +124,10 @@ void InterpolationEngine::interpolation()
   Sto_ManFree ( proof           );
   // end release memory
 }
+
 Abc_Ntk_t* InterpolationEngine::convertAigToNtk( Aig_Man_t *aig )
 {
   Abc_Ntk_t *circuit = Abc_NtkAlloc( ABC_NTK_STRASH, ABC_FUNC_AIG, 1 );
-  Abc_Aig_t *manager = static_cast<Abc_Aig_t*>( circuit->pManFunc );
 
   std::queue<Aig_Obj_t*> box;
 
@@ -129,18 +135,30 @@ Abc_Ntk_t* InterpolationEngine::convertAigToNtk( Aig_Man_t *aig )
   Aig_ManIncrementTravId( aig );
   Aig_ManFanoutStart    ( aig );
 
-  // create pi
+  createPi    ( aig, circuit, box );
+  buildCircuit( aig, circuit, box );
+
+  Aig_ManFanoutStop( aig );
+  return circuit;
+}
+
+void InterpolationEngine::createPi( Aig_Man_t *aig, Abc_Ntk_t *ntk, std::queue<Aig_Obj_t*> &box )
+{
   for( int i = 0 ; i < Aig_ManCiNum( aig ) ; ++i )
   {
-     Abc_Obj_t *pi = Abc_NtkCreatePi( circuit );
+     Abc_Obj_t *pi = Abc_NtkCreatePi( ntk );
      Aig_Obj_t *ci = Aig_ManCi( aig, i );
 
-     Abc_ObjAssignName( pi, Abc_ObjName( baseFunctions[i] ), NULL );
+     Abc_ObjAssignName( pi, Abc_ObjName( basesOn[i] ), NULL );
      Aig_ObjSetCopy( ci, reinterpret_cast<Aig_Obj_t*>( pi ) );
      Aig_ObjSetTravIdCurrent( aig, ci );
      box.push( ci );
   }
-  // end create pi
+}
+
+void InterpolationEngine::buildCircuit( Aig_Man_t *aig, Abc_Ntk_t *ntk, std::queue<Aig_Obj_t*> &box )
+{
+  Abc_Aig_t *manager = static_cast<Abc_Aig_t*>( ntk->pManFunc );
 
   // build circuit
   while( !box.empty() )
@@ -156,11 +174,11 @@ Abc_Ntk_t* InterpolationEngine::convertAigToNtk( Aig_Man_t *aig )
       if( Aig_ObjIsTravIdCurrent( aig, fanout ) ) continue;
       if( Aig_ObjIsCo( fanout ) )
       {
-        Abc_Obj_t *po     = Abc_NtkCreatePo( circuit );
+        Abc_Obj_t *po     = Abc_NtkCreatePo( ntk );
         Abc_Obj_t *fanin  = Abc_ObjRegular( reinterpret_cast<Abc_Obj_t*>( Aig_ObjCopy( node ) ) );
 
         Abc_ObjAddFanin   ( po, fanin );
-        Abc_ObjAssignName ( po, Abc_ObjName( targetFunction ), NULL );
+        Abc_ObjAssignName ( po, Abc_ObjName( targetOn ), NULL );
         Aig_ObjSetTravIdCurrent( aig, fanout );
         continue;
       }
@@ -184,7 +202,5 @@ Abc_Ntk_t* InterpolationEngine::convertAigToNtk( Aig_Man_t *aig )
   }
   // end build circuit
 
-  Abc_AigCleanup    ( manager );
-  Aig_ManFanoutStop ( aig     );
-  return circuit;
+  Abc_AigCleanup( manager );
 }
