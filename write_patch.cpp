@@ -147,7 +147,7 @@ void writePatchedCircuit( const string &patchedFileName, const string & referenc
       {
         Abc_Obj_t *pNet = Abc_ObjFanin0( pObj );
 
-        outFile << Abc_ObjName( pNet ) << ",";
+        outFile << "." << Abc_ObjName( pNet ) << "(" << Abc_ObjName( pNet ) << "),";
       }
       // end write patch output name
 
@@ -156,7 +156,7 @@ void writePatchedCircuit( const string &patchedFileName, const string & referenc
       {
         Abc_Obj_t *pNet = Abc_ObjFanout0( pObj );
 
-        outFile << Abc_ObjName( pNet );
+        outFile << "." << Abc_ObjName( pNet ) << "(" << Abc_ObjName( pNet ) << ")";
         if( i + 1 != Abc_NtkPiNum( circuit ) )
           outFile << ",";
       }
