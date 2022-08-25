@@ -11,9 +11,10 @@
 ## Dependency
 
   - **abc** : [abc berkeley](https://people.eecs.berkeley.edu/~alanmi/abc/)
+    - the code of abc is moved to [github](https://github.com/berkeley-abc/abc)
+      but seems not mentioned in the website
 
 ## Compile
 
-  - modify 'abcDir' in 'Makefile' to the directory that place **abc** source and library
   - check 'getAbcFlags.sh' is executable
   - run `make`
