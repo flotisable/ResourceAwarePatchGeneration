@@ -13,3 +13,4 @@ Test/ResourceAwarePatchGeneration/test
 Test/ResourceAwarePatchGeneration/*.genlib
 *.txt
 *.blif
+*.d

@@ -1,13 +1,16 @@
-all: interpolation.o NtkToCnfConverter.o InterpolationEngine.o
 
-interpolation.o: interpolation.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+OBJS := $(subst .cpp,.o,$(wildcard *.cpp))
 
-NtkToCnfConverter.o: NtkToCnfConverter.cpp NtkToCnfConverter.h
-	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+.PHONY:
+all: $(OBJS)
 
-InterpolationEngine.o: InterpolationEngine.cpp InterpolationEngine.h
-	$(CXX) $(CXXFLAGS) -c -o $@ $< 
+-include $(subst .o,.d,$(OBJS))
 
+%.o: %.d
+
+%.d: %.cpp
+	$(CXX) $(CXXFLAGS) -MM -MT '(subst .d,.o,$@) $@' $< > $@
+
+.PHONY:
 clean:
-	rm *.o
+	-rm *.o *.d
