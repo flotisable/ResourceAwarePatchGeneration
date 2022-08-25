@@ -86,5 +86,5 @@ void TestInterpolationEngine::write( const std::string &file )
   interpolant = Abc_NtkToNetlist( interpolant );
 
   Abc_NtkToAig( interpolant );
-  Io_WriteVerilog( interpolant, const_cast<char*>( file.c_str() ) );
+  Io_WriteVerilog( interpolant, const_cast<char*>( file.c_str() ), 0 );
 }

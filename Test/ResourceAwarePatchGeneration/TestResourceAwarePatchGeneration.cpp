@@ -114,7 +114,7 @@ void TestResourceAwarePatchGeneration::testInterpolation()
 
   circuit = generator.interpolant;
 
-  Io_WriteVerilog( circuit, const_cast<char*>( outFile.c_str() ) );
+  Io_WriteVerilog( circuit, const_cast<char*>( outFile.c_str() ), 0 );
 }
 
 void TestResourceAwarePatchGeneration::testFunctionalDependency()

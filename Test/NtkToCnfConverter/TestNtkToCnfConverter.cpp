@@ -30,7 +30,7 @@ void writeCircuit( const string &outFile, Abc_Ntk_t *circuit )
 
   Abc_NtkToAig( newCircuit );
 
-  Io_WriteVerilog( newCircuit, const_cast<char*>( outFile.c_str() ) );
+  Io_WriteVerilog( newCircuit, const_cast<char*>( outFile.c_str() ), 0 );
 }
 
 TestNtkToCnfConverter::TestNtkToCnfConverter()
@@ -97,8 +97,8 @@ void TestNtkToCnfConverter::testCreateOnOffCircuit()
 
   converter.createOnOffCircuit();
 
-  writeCircuit( outFile + "On.v",   converter.ntkOn  );
-  writeCircuit( outFile + "Off.v",  converter.ntkOff );
+  writeCircuit( outFile + "On.v",   converter.circuitOn  );
+  writeCircuit( outFile + "Off.v",  converter.circuitOff );
 }
 
 void TestNtkToCnfConverter::testCircuitToCnf()

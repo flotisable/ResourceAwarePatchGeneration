@@ -31,7 +31,7 @@ void ResourceAwarePatchGenerator::write_patch( const string patchFileName, const
   const string patchTempFileName = "patchTemp.v";
 
   // write patch circuit
-  Io_WriteVerilog( interpolant, const_cast<char*>( patchTempFileName.c_str() ) );
+  Io_WriteVerilog( interpolant, const_cast<char*>( patchTempFileName.c_str() ), 0 /*only ands*/ );
   formatPatch( patchFileName, patchTempFileName );
   // end write patch circuit
 
