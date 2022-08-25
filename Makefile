@@ -32,6 +32,10 @@ linkedFiles := \
   $(abcLibDir)/$(abcLib) 
 # end project object files
 
+# test related variables
+tests := $(addprefix test,$(subst $(testDir)/,,$(wildcard $(testDir)/*)))
+# end test related variables
+
 export
 
 .PHONY: all
@@ -61,14 +65,12 @@ $(abcLibDir)/$(abcLib):
 	$(MAKE) -C $(abcDir) $(abcLib)
 
 # targets for test
-testNtkToCnfConverter:
-	$(MAKE) -e -C $(testDir)/NtkToCnfConverter
+.PHONY: test
+test: $(tests)
+	./test.sh
 
-testInterpolationEngine:
-	$(MAKE) -e -C $(testDir)/InterpolationEngine
-
-testResourceAwarePatchGeneration:
-	$(MAKE) -e -C $(testDir)/ResourceAwarePatchGeneration
+$(tests):
+	$(MAKE) -e -C $(testDir)/$(subst test,,$@)
 # end targets for test
 
 .PHONY: clean
