@@ -14,6 +14,15 @@ currentDir=$(pwd)
 abcFlags=""
 
 cd ${abcDir}
+
+# init abc submodule when needed
+if [ -z "$(ls)" ]; then
+
+  git submodule init    > /dev/null 2>&1
+  git submodule update  > /dev/null 2>&1
+
+fi
+
 # parse abc CFLAGS
 for string in $( make | grep "CFLAGS" ); do
 

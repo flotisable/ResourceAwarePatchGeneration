@@ -1,16 +1,17 @@
+# project directories
+projectDir     := $(PWD)
+satAndInterDir := $(projectDir)/SatAndInterpolation
+testDir        := $(projectDir)/Test
+# end project directories
+
 # abc related variables
-abcDir    := $(HOME)/abc
+$(info Collecting abc flags)
+abcDir    := $(projectDir)/Lib/abc
 abcSrcDir := $(abcDir)/src
 abcLibDir := $(abcDir)
 abcLib    := libabc.a
 abcFlags  := $(shell ./getAbcFlags.sh $(abcDir))
 # end abc related variables
-
-# project directories
-projectDir			:= $(PWD)
-satAndInterDir 	:= $(projectDir)/SatAndInterpolation
-testDir					:= $(projectDir)/Test
-# end project directories
 
 # project related variables
 PROG      := rpgen
@@ -105,6 +106,9 @@ $(satAndInterLinkedFiles): $(satAndInterDir)/interpolation.cpp $(satAndInterDir)
 debug: CXXFLAGS += -g -O
 debug: all
 
+$(abcLibDir)/$(abcLib):
+	$(MAKE) -C $(abcDir) $(abcLib)
+
 # targets for test
 testNtkToCnfConverter:
 	$(MAKE) -e -C $(testDir)/NtkToCnfConverter
@@ -117,5 +121,6 @@ testResourceAwarePatchGeneration:
 # end targets for test
 
 clean:
-	rm *.o $(PROG)
-	$(MAKE) -C $(satAndInterDir) clean
+	-rm *.o $(PROG)
+	-$(MAKE) -C $(satAndInterDir) clean
+	-$(MAKE) -C $(abcDir) clean
