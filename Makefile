@@ -51,6 +51,7 @@ linkedFiles := \
 
 export
 
+.PHONY: all
 all: $(PROG)
 
 # main targets
@@ -103,8 +104,9 @@ $(satAndInterLinkedFiles): $(satAndInterDir)/interpolation.cpp $(satAndInterDir)
 	$(MAKE) -e -C $(satAndInterDir)
 # end main targets
 
+.PHONY: debug
 debug: CXXFLAGS += -g -O
-debug: all
+debug: $(PROG)
 
 $(abcLibDir)/$(abcLib):
 	$(MAKE) -C $(abcDir) $(abcLib)
@@ -120,6 +122,7 @@ testResourceAwarePatchGeneration:
 	$(MAKE) -e -C $(testDir)/ResourceAwarePatchGeneration
 # end targets for test
 
+.PHONY: clean
 clean:
 	-rm *.o $(PROG)
 	-$(MAKE) -C $(satAndInterDir) clean
