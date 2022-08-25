@@ -24,7 +24,7 @@ if [ -z "$(ls)" ]; then
 fi
 
 # parse abc CFLAGS
-for string in $( make | grep "CFLAGS" ); do
+for string in $( make -n | grep "CFLAGS" ); do
 
 	if [ $( echo ${string} | grep "\-D.*" ) ]; then
 
